@@ -83,7 +83,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="">QQ: 87826632</a>
+                    <a href="">交流群: 3113961</a>
                     <a href="https://github.com/SadCreeper/laravel-react-seed" target="_blank">GitHub</a>
                 </div>
             </div>
