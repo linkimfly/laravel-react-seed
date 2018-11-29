@@ -41088,27 +41088,6 @@ module.exports = __webpack_require__(469);
 /***/ (function(module, exports, __webpack_require__) {
 
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes React and other helpers. It's a great starting point while
- * building robust, powerful web applications using React + Laravel.
- */
-
-__webpack_require__(470);
-
-/**
- * Next, we will create a fresh React component instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-__webpack_require__(473);
-
-/***/ }),
-/* 470 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
 window._ = __webpack_require__(132);
 
 /**
@@ -41148,23 +41127,15 @@ if (token) {
 }
 
 /**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
+ * Next, we will create a fresh React component instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-// import Echo from 'laravel-echo'
-
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: 'your-pusher-key',
-//     cluster: 'mt1',
-//     encrypted: true
-// });
+__webpack_require__(473);
 
 /***/ }),
+/* 470 */,
 /* 471 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -53966,12 +53937,12 @@ var Example = function (_Component) {
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'div',
                                 { className: 'panel-heading' },
-                                'Example Component'
+                                'React Example'
                             ),
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'div',
                                 { className: 'panel-body' },
-                                'I\'m an example component!'
+                                'I\'m an react example component!'
                             )
                         )
                     )

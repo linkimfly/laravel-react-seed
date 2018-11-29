@@ -8,10 +8,10 @@ export default class Example extends Component {
                 <div className="row">
                     <div className="col-md-8 col-md-offset-2">
                         <div className="panel panel-default">
-                            <div className="panel-heading">Example Component</div>
+                            <div className="panel-heading">React Example</div>
 
                             <div className="panel-body">
-                                I'm an example component!
+                                I'm an react example component!
                             </div>
                         </div>
                     </div>

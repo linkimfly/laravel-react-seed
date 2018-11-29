@@ -5,11 +5,27 @@ const { Header, Sider, Content } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom'
 import styles from "./Main.css"
 
-const Dashboard = (
-    <div>
+const Dashboard = function (){
+  return(
+    <h1>
         Dashboard
-    </div>
-)
+    </h1>
+  )
+}
+const Menu1 = function (){
+  return(
+    <h1>
+        Menu1
+    </h1>
+  )
+}
+const Menu2 = function (){
+  return(
+    <h1>
+        Menu2
+    </h1>
+  )
+}
 
 class SiderLayout extends React.Component {
   render() {
@@ -27,6 +43,18 @@ class SiderLayout extends React.Component {
                   <span>后台首页</span>
                 </Link>
               </Menu.Item>
+              <Menu.Item key="menu1">
+                <Link to="/menu1">
+                  <Icon type="smile" />
+                  <span>后台菜单1</span>
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="menu2">
+                <Link to="/menu2">
+                  <Icon type="smile" />
+                  <span>后台菜单2</span>
+                </Link>
+              </Menu.Item>
               <Menu.Item key="exit">
                 <a href="/">
                   <Icon type="logout" />
@@ -40,7 +68,12 @@ class SiderLayout extends React.Component {
 
             </Header>
             <Content className="layout__content">
-
+              <Switch>
+                <Route path="/" exact component={Dashboard}/>
+                <Route path="/menu1" exact component={Menu1}/>
+                <Route path="/menu2" exact component={Menu2}/>
+                <Redirect to="/" />
+              </Switch>
             </Content>
           </Layout>
         </Layout>

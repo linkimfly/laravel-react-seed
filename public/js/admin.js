@@ -48609,11 +48609,27 @@ var Header = __WEBPACK_IMPORTED_MODULE_5_antd_lib_layout___default.a.Header,
 
 
 
-var Dashboard = __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
-  'div',
-  null,
-  'Dashboard'
-);
+var Dashboard = function Dashboard() {
+  return __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+    'h1',
+    null,
+    'Dashboard'
+  );
+};
+var Menu1 = function Menu1() {
+  return __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+    'h1',
+    null,
+    'Menu1'
+  );
+};
+var Menu2 = function Menu2() {
+  return __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+    'h1',
+    null,
+    'Menu2'
+  );
+};
 
 var SiderLayout = function (_React$Component) {
   _inherits(SiderLayout, _React$Component);
@@ -48658,6 +48674,34 @@ var SiderLayout = function (_React$Component) {
               ),
               __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_1_antd_lib_menu___default.a.Item,
+                { key: 'menu1' },
+                __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_8_react_router_dom__["b" /* Link */],
+                  { to: '/menu1' },
+                  __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3_antd_lib_icon___default.a, { type: 'smile' }),
+                  __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                    'span',
+                    null,
+                    '\u540E\u53F0\u83DC\u53551'
+                  )
+                )
+              ),
+              __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_1_antd_lib_menu___default.a.Item,
+                { key: 'menu2' },
+                __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_8_react_router_dom__["b" /* Link */],
+                  { to: '/menu2' },
+                  __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3_antd_lib_icon___default.a, { type: 'smile' }),
+                  __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                    'span',
+                    null,
+                    '\u540E\u53F0\u83DC\u53552'
+                  )
+                )
+              ),
+              __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_1_antd_lib_menu___default.a.Item,
                 { key: 'exit' },
                 __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
                   'a',
@@ -48676,7 +48720,18 @@ var SiderLayout = function (_React$Component) {
             __WEBPACK_IMPORTED_MODULE_5_antd_lib_layout___default.a,
             null,
             __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(Header, { className: 'layout__header' }),
-            __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(Content, { className: 'layout__content' })
+            __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+              Content,
+              { className: 'layout__content' },
+              __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_8_react_router_dom__["e" /* Switch */],
+                null,
+                __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8_react_router_dom__["d" /* Route */], { path: '/', exact: true, component: Dashboard }),
+                __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8_react_router_dom__["d" /* Route */], { path: '/menu1', exact: true, component: Menu1 }),
+                __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8_react_router_dom__["d" /* Route */], { path: '/menu2', exact: true, component: Menu2 }),
+                __WEBPACK_IMPORTED_MODULE_6_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8_react_router_dom__["c" /* Redirect */], { to: '/' })
+              )
+            )
           )
         )
       );
@@ -61708,15 +61763,15 @@ module.exports = exports["default"];
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(453);
 /* unused harmony reexport Prompt */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(455);
-/* unused harmony reexport Redirect */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(307);
-/* unused harmony reexport Route */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(272);
 /* unused harmony reexport Router */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(457);
 /* unused harmony reexport StaticRouter */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(459);
-/* unused harmony reexport Switch */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generatePath__ = __webpack_require__(461);
 /* unused harmony reexport generatePath */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__matchPath__ = __webpack_require__(462);
@@ -63079,7 +63134,7 @@ Prompt.contextTypes = {
 // Written in this round about way for babel-transform-imports
 
 
-/* unused harmony default export */ var _unused_webpack_default_export = (__WEBPACK_IMPORTED_MODULE_0_react_router_es_Redirect__["a" /* default */]);
+/* harmony default export */ __webpack_exports__["a"] = (__WEBPACK_IMPORTED_MODULE_0_react_router_es_Redirect__["a" /* default */]);
 
 /***/ }),
 /* 456 */
@@ -63396,7 +63451,7 @@ StaticRouter.childContextTypes = {
 // Written in this round about way for babel-transform-imports
 
 
-/* unused harmony default export */ var _unused_webpack_default_export = (__WEBPACK_IMPORTED_MODULE_0_react_router_es_Switch__["a" /* default */]);
+/* harmony default export */ __webpack_exports__["a"] = (__WEBPACK_IMPORTED_MODULE_0_react_router_es_Switch__["a" /* default */]);
 
 /***/ }),
 /* 460 */
@@ -63593,8 +63648,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./Main.css", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!./Main.css");
+		module.hot.accept("!!../../../../../node_modules/css-loader/index.js!./Main.css", function() {
+			var newContent = require("!!../../../../../node_modules/css-loader/index.js!./Main.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
