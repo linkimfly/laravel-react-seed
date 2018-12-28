@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Dropdown, Avatar } from 'antd';
 const { Header, Sider, Content } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom'
 import styles from "./Main.css"
@@ -65,7 +65,14 @@ class SiderLayout extends React.Component {
           </Sider>
           <Layout>
             <Header className="layout__header">
-
+              <div className="layout__header__right">
+                <Dropdown overlay={menu}>
+                  <a href="#">
+                    <Avatar src={'images/default-avatar.png'} />
+                    <span className="layout__header__right__name">username</span>
+                  </a>
+                </Dropdown>
+              </div>
             </Header>
             <Content className="layout__content">
               <Switch>
@@ -90,6 +97,36 @@ class SiderLayout extends React.Component {
   }
   //new function
 }
+
+//头像下拉菜单处理
+const avatarOnClick = function({key}){
+  switch (key) {
+    case 'logout':
+      axios.post('logout')
+      .then(function (response) {
+        location.reload()
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      break;
+    default: break;
+  }
+};
+//头像下拉菜单
+const menu = (
+  <Menu onClick={avatarOnClick}>
+    <Menu.Item key="version">
+      <Icon type="crown" />
+      <span>版本 0.0.0</span>
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item key="logout">
+      <Icon type="logout" />
+      <span>退出登录</span>
+    </Menu.Item>
+  </Menu>
+);
 
 //挂载根节点
 if (document.getElementById('root')) {
