@@ -2,23 +2,11 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Layout, Menu, Icon, Dropdown, Avatar } from 'antd';
 const { Header, Sider, Content } = Layout;
-import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom'
-import styles from "./Main.css"
-
-const News = function (){
-  return(
-    <h1>
-        News
-    </h1>
-  )
-}
-const Slides = function (){
-  return(
-    <h1>
-        Slides
-    </h1>
-  )
-}
+import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom';
+import News from './News/News';
+import Slides from './Slides/Slides';
+import Settings from './Settings/Settings';
+import styles from "./Main.css";
 
 class SiderLayout extends React.Component {
   render() {
@@ -39,7 +27,13 @@ class SiderLayout extends React.Component {
               <Menu.Item key="slides">
                 <Link to="/slides">
                   <Icon type="retweet" />
-                  <span>轮播图管理</span>
+                  <span>轮播管理</span>
+                </Link>
+              </Menu.Item>
+							<Menu.Item key="settings">
+                <Link to="/settings">
+                  <Icon type="setting" />
+                  <span>设置中心</span>
                 </Link>
               </Menu.Item>
             </Menu>
@@ -58,7 +52,8 @@ class SiderLayout extends React.Component {
             <Content className="layout__content">
               <Switch>
                 <Route path="/news" exact component={News}/>
-                <Route path="/slides" exact component={Slides}/>
+								<Route path="/slides" exact component={Slides}/>
+                <Route path="/settings" exact component={Settings}/>
                 <Redirect to="/news" />
               </Switch>
             </Content>

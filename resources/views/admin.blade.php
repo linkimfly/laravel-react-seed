@@ -12,5 +12,8 @@
 
         </div>
     </body>
+	<script type="text/javascript">
+        window.user = @json($user);
+    </script>
     <script src="{{ asset('js/admin.js') }}"></script>
 </html>

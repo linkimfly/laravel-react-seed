@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
-class Super
+class Dev
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,8 @@ class Super
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::id() != 1) {
+		$permit_level_arr = ['dev'];
+		if (!in_array(Auth::user()->level, $permit_level_arr)) {
             return redirect('/');
         }
         return $next($request);

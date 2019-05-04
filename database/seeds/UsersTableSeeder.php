@@ -14,6 +14,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@qq.com',
+			'level' => 'dev',
             'password' => bcrypt('admin')
         ]);
     }

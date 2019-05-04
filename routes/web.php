@@ -11,12 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/admin', 'Admin\AdminController@index')->name('admin');
+
+//需要管理员权限
+Route::middleware(['auth', 'admin'])->group(function () {
+	Route::get('/admin', 'Admin\AdminController@index')->name('admin');
+});
+
+//需要开发者权限
+Route::middleware(['auth', 'dev'])->group(function () {
+
+});

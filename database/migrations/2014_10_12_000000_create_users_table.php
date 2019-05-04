@@ -17,7 +17,8 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('password');
+			$table->string('password');
+            $table->string('level')->default('user');//dev - 开发者，admin - 管理员，user - 用户
             $table->rememberToken();
             $table->timestamps();
         });
