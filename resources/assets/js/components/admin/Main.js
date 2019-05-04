@@ -5,24 +5,17 @@ const { Header, Sider, Content } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom'
 import styles from "./Main.css"
 
-const Dashboard = function (){
+const News = function (){
   return(
     <h1>
-        Dashboard
+        News
     </h1>
   )
 }
-const Menu1 = function (){
+const Slides = function (){
   return(
     <h1>
-        Menu1
-    </h1>
-  )
-}
-const Menu2 = function (){
-  return(
-    <h1>
-        Menu2
+        Slides
     </h1>
   )
 }
@@ -37,29 +30,17 @@ class SiderLayout extends React.Component {
             <Menu
               theme="dark"
               defaultSelectedKeys={this.menuAutoSelect()}>
-              <Menu.Item key="dashboard">
-                <Link to="/">
-                  <Icon type="dashboard" />
-                  <span>后台首页</span>
+              <Menu.Item key="news">
+                <Link to="/news">
+                  <Icon type="file-text" />
+                  <span>新闻管理</span>
                 </Link>
               </Menu.Item>
-              <Menu.Item key="menu1">
-                <Link to="/menu1">
-                  <Icon type="smile" />
-                  <span>后台菜单1</span>
+              <Menu.Item key="slides">
+                <Link to="/slides">
+                  <Icon type="retweet" />
+                  <span>轮播图管理</span>
                 </Link>
-              </Menu.Item>
-              <Menu.Item key="menu2">
-                <Link to="/menu2">
-                  <Icon type="smile" />
-                  <span>后台菜单2</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="exit">
-                <a href="/">
-                  <Icon type="logout" />
-                  <span>退出后台</span>
-                </a>
               </Menu.Item>
             </Menu>
           </Sider>
@@ -76,10 +57,9 @@ class SiderLayout extends React.Component {
             </Header>
             <Content className="layout__content">
               <Switch>
-                <Route path="/" exact component={Dashboard}/>
-                <Route path="/menu1" exact component={Menu1}/>
-                <Route path="/menu2" exact component={Menu2}/>
-                <Redirect to="/" />
+                <Route path="/news" exact component={News}/>
+                <Route path="/slides" exact component={Slides}/>
+                <Redirect to="/news" />
               </Switch>
             </Content>
           </Layout>
@@ -91,7 +71,7 @@ class SiderLayout extends React.Component {
   menuAutoSelect() {
     let key = window.location.hash.split('/')[1];
     if (key=='' || !key) {
-      key = 'dashboard';
+      key = 'news';
     }
     return new Array(key);
   }
