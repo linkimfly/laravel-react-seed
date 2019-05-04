@@ -54308,7 +54308,7 @@ var SiderLayout = function (_React$Component) {
                   )
                 )
               ),
-              __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(
+              user.level == 'dev' ? __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_5_antd_lib_menu___default.a.Item,
                 { key: 'settings' },
                 __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(
@@ -54321,7 +54321,7 @@ var SiderLayout = function (_React$Component) {
                     '\u8BBE\u7F6E\u4E2D\u5FC3'
                   )
                 )
-              )
+              ) : ''
             )
           ),
           __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(
@@ -54357,7 +54357,7 @@ var SiderLayout = function (_React$Component) {
                 null,
                 __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_12_react_router_dom__["d" /* Route */], { path: '/news', exact: true, component: __WEBPACK_IMPORTED_MODULE_13__News_News__["a" /* default */] }),
                 __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_12_react_router_dom__["d" /* Route */], { path: '/slides', exact: true, component: __WEBPACK_IMPORTED_MODULE_14__Slides_Slides__["a" /* default */] }),
-                __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_12_react_router_dom__["d" /* Route */], { path: '/settings', exact: true, component: __WEBPACK_IMPORTED_MODULE_15__Settings_Settings__["a" /* default */] }),
+                user.level == 'dev' ? __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_12_react_router_dom__["d" /* Route */], { path: '/settings', exact: true, component: __WEBPACK_IMPORTED_MODULE_15__Settings_Settings__["a" /* default */] }) : '',
                 __WEBPACK_IMPORTED_MODULE_10_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_12_react_router_dom__["c" /* Redirect */], { to: '/news' })
               )
             )

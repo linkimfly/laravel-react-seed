@@ -30,12 +30,14 @@ class SiderLayout extends React.Component {
                   <span>轮播管理</span>
                 </Link>
               </Menu.Item>
-							<Menu.Item key="settings">
-                <Link to="/settings">
-                  <Icon type="setting" />
-                  <span>设置中心</span>
-                </Link>
-              </Menu.Item>
+							{user.level == 'dev'?
+								<Menu.Item key="settings">
+	                <Link to="/settings">
+	                  <Icon type="setting" />
+	                  <span>设置中心</span>
+	                </Link>
+	              </Menu.Item>:''
+							}
             </Menu>
           </Sider>
           <Layout>
@@ -53,7 +55,9 @@ class SiderLayout extends React.Component {
               <Switch>
                 <Route path="/news" exact component={News}/>
 								<Route path="/slides" exact component={Slides}/>
-                <Route path="/settings" exact component={Settings}/>
+								{user.level == 'dev'?
+									<Route path="/settings" exact component={Settings}/>:''
+								}
                 <Redirect to="/news" />
               </Switch>
             </Content>
