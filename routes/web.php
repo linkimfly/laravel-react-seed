@@ -23,5 +23,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 //需要开发者权限
 Route::middleware(['auth', 'dev'])->group(function () {
-
+	//api
+	Route::namespace('Admin')->prefix('admin-api')->group(function (){
+		Route::get('types', 'TypeController@index');
+	});
 });

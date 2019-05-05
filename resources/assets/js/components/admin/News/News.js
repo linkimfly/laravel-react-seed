@@ -6,9 +6,9 @@ export default class News extends React.Component {
     super();
     this.state = {
 			news:[
-				{title:'示例标题', type:'新闻通知', author:'电子科技大学', created_at:'2019-05-04 17:00'},
-				{title:'示例标题', type:'资料下载', author:'电子科技大学', created_at:'2019-05-04 17:00'},
-				{title:'示例标题', type:'往届作品展示', author:'电子科技大学', created_at:'2019-05-04 17:00'},
+				{key:1, title:'示例标题', type:'新闻通知', author:'电子科技大学', created_at:'2019-05-04 17:00'},
+				{key:2, title:'示例标题', type:'资料下载', author:'电子科技大学', created_at:'2019-05-04 17:00'},
+				{key:3, title:'示例标题', type:'往届作品展示', author:'电子科技大学', created_at:'2019-05-04 17:00'},
 			]
     };
   }

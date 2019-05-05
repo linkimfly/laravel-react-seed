@@ -4,8 +4,8 @@ import { Layout, Menu, Icon, Dropdown, Avatar } from 'antd';
 const { Header, Sider, Content } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom';
 import News from './News/News';
-import Slides from './Slides/Slides';
-import Settings from './Settings/Settings';
+import Slide from './Slide/Slide';
+import Setting from './Setting/Setting';
 import styles from "./Main.css";
 
 class SiderLayout extends React.Component {
@@ -32,7 +32,7 @@ class SiderLayout extends React.Component {
               </Menu.Item>
 							{user.level == 'dev'?
 								<Menu.Item key="settings">
-	                <Link to="/settings">
+	                <Link to="/settings/types">
 	                  <Icon type="setting" />
 	                  <span>设置中心</span>
 	                </Link>
@@ -54,10 +54,10 @@ class SiderLayout extends React.Component {
             <Content className="layout__content">
               <Switch>
                 <Route path="/news" exact component={News}/>
-								<Route path="/slides" exact component={Slides}/>
-								{user.level == 'dev'?
-									<Route path="/settings" exact component={Settings}/>:''
-								}
+								<Route path="/slides" exact component={Slide}/>
+
+								{user.level == 'dev'?<Route path="/settings/:module" exact component={Setting}/>:''}
+
                 <Redirect to="/news" />
               </Switch>
             </Content>
