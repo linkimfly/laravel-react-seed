@@ -16,12 +16,29 @@ class NewsController extends Controller
 		]);
 	}
 
+	public function show($id)
+	{
+		$currentNews = News::findOrFail($id);
+
+		if (!$currentNews) {
+			return response()->json([
+				'status' => 1,
+				'message' => '未找到相关新闻，请联系网站管理员！',
+			]);
+		}
+
+		return response()->json([
+			'status' => 0,
+			'current_news' => $currentNews
+		]);
+	}
+
 	public function update(Request $request)
 	{
 		$inputs = $request->all();
 
 		if (array_has($inputs, 'id')) {
-			$news = News::findOrFail($receivedNews->id);
+			$news = News::findOrFail($inputs['id']);
 			if (!$news) {
 				return response()->json([
 					'status' => 1,

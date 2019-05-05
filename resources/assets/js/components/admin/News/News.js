@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Button, Modal, Form, Input, message } from 'antd';
+const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
 
 export default class News extends React.Component {
@@ -7,6 +8,7 @@ export default class News extends React.Component {
     super();
     this.state = {
 			news: [],
+			currentNews: null,
 			loading: true,
 			visibleNewsEditModal: false,
     };
@@ -31,10 +33,22 @@ export default class News extends React.Component {
 		  title: '创建时间',
 		  dataIndex: 'created_at',
 		  key: 'created_at',
-		}];
+		}, {
+      title: '操作',
+      key: 'action',
+      width: 180,
+      render: (text, record) => (
+        <span>
+          <ButtonGroup>
+							<Button onClick={e => {this.showNewsEditModal(e, '编辑新闻', record.id)}}>编辑</Button>
+              <Button>删除</Button>
+          </ButtonGroup>
+        </span>
+      ),
+    }];
     return (
       <div style={{ padding:20 }}>
-				<Button type="primary" onClick={this.showNewsEditModal}>发布新闻</Button>
+				<Button type="primary" onClick={e => {this.showNewsEditModal(e, '发布新闻')}}>发布新闻</Button>
       	<Table dataSource={this.state.news} columns={columns} loading={this.state.loading} />
 
 				<NewsEditForm
@@ -42,6 +56,7 @@ export default class News extends React.Component {
 					visible={this.state.visibleNewsEditModal}
 					onCancel={this.handleCancel}
 					onSubmit={this.handleSubmit}
+					title={this.state.newsEditModalTitle}
 				/>
       </div>
     )
@@ -67,21 +82,48 @@ export default class News extends React.Component {
 		})
 	}
 
-	showNewsEditModal = () => {
-    this.setState({
-      visibleNewsEditModal: true,
-    });
+	showNewsEditModal = (e, title=null, id=null) => {
+		this.setState({ newsEditModalTitle: title });
+		if (id) {
+			axios.get(`${prefixAPI}/news/${id}`)
+			.then(res => {
+				let currentNews = res.data.current_news;
+				this.formRef.props.form.setFieldsValue({
+					title: currentNews.title,
+					type: currentNews.type,
+					author: currentNews.author,
+				});
+				this.setState({
+					currentNews: currentNews,
+					visibleNewsEditModal: true
+				});
+			})
+			.catch(err => {
+				console.log(err);
+			})
+		}else {
+			this.setState({ visibleNewsEditModal: true });
+		}
+
   }
 
   handleSubmit = (e) => {
 		let form = this.formRef.props.form;
 		form.validateFields((err, values) => {
       if (!err) {
+				if (this.state.currentNews) {
+					values.id = this.state.currentNews.id;
+				}
 				axios.post(`${prefixAPI}/news`, values)
 				.then(response => {
-					message.success(response.data.message);
+					if (response.data.status == 0) {
+						message.success(response.data.message);
+					}else {
+						message.error(response.data.message);
+					}
 					form.resetFields();
 					this.setState({
+						currentNews: null,
 			      visibleNewsEditModal: false,
 			    });
 					this.fetchData();
@@ -94,9 +136,13 @@ export default class News extends React.Component {
   }
 
   handleCancel = (e) => {
-    this.setState({
-      visibleNewsEditModal: false,
-    });
+    this.setState({ visibleNewsEditModal: false }, ()=>{
+			if (this.state.currentNews) {
+				console.log(1);
+				this.setState({currentNews: null});
+				this.formRef.props.form.resetFields();
+			}
+		});
   }
 	//new function
 }
@@ -104,12 +150,12 @@ export default class News extends React.Component {
 const NewsEditForm = Form.create()(
 	class extends React.Component{
 		render() {
-			const { visible, onCancel, onSubmit, form } = this.props;
+			const { visible, onCancel, onSubmit, form, title } = this.props;
 			const { getFieldDecorator } = form;
 			return (
 				<Modal
           visible={visible}
-          title="发布新闻"
+          title={title}
           okText="保存"
           onCancel={onCancel}
           onOk={onSubmit}

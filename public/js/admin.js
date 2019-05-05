@@ -71333,18 +71333,18 @@ module.exports = hoistNonReactStatics;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_antd_lib_table_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_antd_lib_table_style_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_antd_lib_table__ = __webpack_require__(598);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_antd_lib_table___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_antd_lib_table__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_antd_lib_button_style_css__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_antd_lib_button_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_antd_lib_button_style_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_antd_lib_button__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_antd_lib_button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_antd_lib_button__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_antd_lib_message_style_css__ = __webpack_require__(796);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_antd_lib_message_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_antd_lib_message_style_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_antd_lib_message__ = __webpack_require__(799);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_antd_lib_message___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_antd_lib_message__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_antd_lib_form_style_css__ = __webpack_require__(394);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_antd_lib_form_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_antd_lib_form_style_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_antd_lib_form__ = __webpack_require__(395);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_antd_lib_form___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_antd_lib_form__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_antd_lib_message_style_css__ = __webpack_require__(796);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_antd_lib_message_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_antd_lib_message_style_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_antd_lib_message__ = __webpack_require__(799);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_antd_lib_message___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_antd_lib_message__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_antd_lib_form_style_css__ = __webpack_require__(394);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_antd_lib_form_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_antd_lib_form_style_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_antd_lib_form__ = __webpack_require__(395);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_antd_lib_form___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_antd_lib_form__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_antd_lib_button_style_css__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_antd_lib_button_style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_antd_lib_button_style_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_antd_lib_button__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_antd_lib_button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_antd_lib_button__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_react__);
 
@@ -71372,7 +71372,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var FormItem = __WEBPACK_IMPORTED_MODULE_11_antd_lib_form___default.a.Item;
+var ButtonGroup = __WEBPACK_IMPORTED_MODULE_11_antd_lib_button___default.a.Group;
+var FormItem = __WEBPACK_IMPORTED_MODULE_9_antd_lib_form___default.a.Item;
 
 var News = function (_React$Component) {
 	_inherits(News, _React$Component);
@@ -71400,20 +71401,47 @@ var News = function (_React$Component) {
 			});
 		};
 
-		_this.showNewsEditModal = function () {
-			_this.setState({
-				visibleNewsEditModal: true
-			});
+		_this.showNewsEditModal = function (e) {
+			var title = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+			var id = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+			_this.setState({ newsEditModalTitle: title });
+			if (id) {
+				axios.get(prefixAPI + '/news/' + id).then(function (res) {
+					var currentNews = res.data.current_news;
+					_this.formRef.props.form.setFieldsValue({
+						title: currentNews.title,
+						type: currentNews.type,
+						author: currentNews.author
+					});
+					_this.setState({
+						currentNews: currentNews,
+						visibleNewsEditModal: true
+					});
+				}).catch(function (err) {
+					console.log(err);
+				});
+			} else {
+				_this.setState({ visibleNewsEditModal: true });
+			}
 		};
 
 		_this.handleSubmit = function (e) {
 			var form = _this.formRef.props.form;
 			form.validateFields(function (err, values) {
 				if (!err) {
+					if (_this.state.currentNews) {
+						values.id = _this.state.currentNews.id;
+					}
 					axios.post(prefixAPI + '/news', values).then(function (response) {
-						__WEBPACK_IMPORTED_MODULE_9_antd_lib_message___default.a.success(response.data.message);
+						if (response.data.status == 0) {
+							__WEBPACK_IMPORTED_MODULE_7_antd_lib_message___default.a.success(response.data.message);
+						} else {
+							__WEBPACK_IMPORTED_MODULE_7_antd_lib_message___default.a.error(response.data.message);
+						}
 						form.resetFields();
 						_this.setState({
+							currentNews: null,
 							visibleNewsEditModal: false
 						});
 						_this.fetchData();
@@ -71425,13 +71453,18 @@ var News = function (_React$Component) {
 		};
 
 		_this.handleCancel = function (e) {
-			_this.setState({
-				visibleNewsEditModal: false
+			_this.setState({ visibleNewsEditModal: false }, function () {
+				if (_this.state.currentNews) {
+					console.log(1);
+					_this.setState({ currentNews: null });
+					_this.formRef.props.form.resetFields();
+				}
 			});
 		};
 
 		_this.state = {
 			news: [],
+			currentNews: null,
 			loading: true,
 			visibleNewsEditModal: false
 		};
@@ -71466,13 +71499,41 @@ var News = function (_React$Component) {
 				title: '创建时间',
 				dataIndex: 'created_at',
 				key: 'created_at'
+			}, {
+				title: '操作',
+				key: 'action',
+				width: 180,
+				render: function render(text, record) {
+					return __WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
+						'span',
+						null,
+						__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
+							ButtonGroup,
+							null,
+							__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
+								__WEBPACK_IMPORTED_MODULE_11_antd_lib_button___default.a,
+								{ onClick: function onClick(e) {
+										_this2.showNewsEditModal(e, '编辑新闻', record.id);
+									} },
+								'\u7F16\u8F91'
+							),
+							__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
+								__WEBPACK_IMPORTED_MODULE_11_antd_lib_button___default.a,
+								null,
+								'\u5220\u9664'
+							)
+						)
+					);
+				}
 			}];
 			return __WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
 				'div',
 				{ style: { padding: 20 } },
 				__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
-					__WEBPACK_IMPORTED_MODULE_7_antd_lib_button___default.a,
-					{ type: 'primary', onClick: this.showNewsEditModal },
+					__WEBPACK_IMPORTED_MODULE_11_antd_lib_button___default.a,
+					{ type: 'primary', onClick: function onClick(e) {
+							_this2.showNewsEditModal(e, '发布新闻');
+						} },
 					'\u53D1\u5E03\u65B0\u95FB'
 				),
 				__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5_antd_lib_table___default.a, { dataSource: this.state.news, columns: columns, loading: this.state.loading }),
@@ -71482,7 +71543,8 @@ var News = function (_React$Component) {
 					},
 					visible: this.state.visibleNewsEditModal,
 					onCancel: this.handleCancel,
-					onSubmit: this.handleSubmit
+					onSubmit: this.handleSubmit,
+					title: this.state.newsEditModalTitle
 				})
 			);
 		}
@@ -71494,7 +71556,7 @@ var News = function (_React$Component) {
 /* harmony default export */ __webpack_exports__["a"] = (News);
 
 
-var NewsEditForm = __WEBPACK_IMPORTED_MODULE_11_antd_lib_form___default.a.create()(function (_React$Component2) {
+var NewsEditForm = __WEBPACK_IMPORTED_MODULE_9_antd_lib_form___default.a.create()(function (_React$Component2) {
 	_inherits(_class, _React$Component2);
 
 	function _class() {
@@ -71510,20 +71572,21 @@ var NewsEditForm = __WEBPACK_IMPORTED_MODULE_11_antd_lib_form___default.a.create
 			    visible = _props.visible,
 			    onCancel = _props.onCancel,
 			    onSubmit = _props.onSubmit,
-			    form = _props.form;
+			    form = _props.form,
+			    title = _props.title;
 			var getFieldDecorator = form.getFieldDecorator;
 
 			return __WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
 				__WEBPACK_IMPORTED_MODULE_1_antd_lib_modal___default.a,
 				{
 					visible: visible,
-					title: '\u53D1\u5E03\u65B0\u95FB',
+					title: title,
 					okText: '\u4FDD\u5B58',
 					onCancel: onCancel,
 					onOk: onSubmit
 				},
 				__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
-					__WEBPACK_IMPORTED_MODULE_11_antd_lib_form___default.a,
+					__WEBPACK_IMPORTED_MODULE_9_antd_lib_form___default.a,
 					{ style: { paddingTop: 20 } },
 					__WEBPACK_IMPORTED_MODULE_12_react___default.a.createElement(
 						FormItem,
