@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal, Form, Input } from 'antd';
+import { Table, Button, Modal, Form, Input, message } from 'antd';
 const FormItem = Form.Item;
 
 export default class News extends React.Component {
   constructor(props) {
     super();
     this.state = {
-			news: [
-				{key:1, title:'示例标题', type:'新闻通知', author:'电子科技大学', created_at:'2019-05-04 17:00'},
-				{key:2, title:'示例标题', type:'资料下载', author:'电子科技大学', created_at:'2019-05-04 17:00'},
-				{key:3, title:'示例标题', type:'往届作品展示', author:'电子科技大学', created_at:'2019-05-04 17:00'},
-			],
-			currentNews:'111',
+			news: [],
+			loading: true,
 			visibleNewsEditModal: false,
     };
   }
+	componentWillMount(){
+		this.fetchData();
+	}
   render(){
 		const columns = [{
 		  title: '标题',
@@ -36,32 +35,60 @@ export default class News extends React.Component {
     return (
       <div style={{ padding:20 }}>
 				<Button type="primary" onClick={this.showNewsEditModal}>发布新闻</Button>
-      	<Table dataSource={this.state.news} columns={columns} />
+      	<Table dataSource={this.state.news} columns={columns} loading={this.state.loading} />
 
-				<Modal
-          title="Basic Modal"
-          visible={this.state.visibleNewsEditModal}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-					<WrappedNewsEditForm currentNews={this.state.currentNews} wrappedComponentRef={inst => this.formRef = inst} />
-        </Modal>
+				<NewsEditForm
+					wrappedComponentRef={inst => this.formRef = inst}
+					visible={this.state.visibleNewsEditModal}
+					onCancel={this.handleCancel}
+					onSubmit={this.handleSubmit}
+				/>
       </div>
     )
   }
+
+	fetchData = () => {
+		if (this.state.loading != true) {
+			this.setState({loading: true});
+		}
+		axios.get(`${prefixAPI}/news`)
+		.then(response => {
+			let news = response.data.news;
+			news.map(currentNews => {
+				currentNews.key = currentNews.id;
+			})
+			this.setState({
+				news: news,
+				loading: false,
+			})
+		})
+		.catch(err => {
+			console.log(err);
+		})
+	}
+
 	showNewsEditModal = () => {
     this.setState({
       visibleNewsEditModal: true,
     });
   }
 
-  handleOk = (e) => {
-		this.formRef.props.form.validateFields((err, values) => {
+  handleSubmit = (e) => {
+		let form = this.formRef.props.form;
+		form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
-				this.setState({
-		      visibleNewsEditModal: false,
-		    });
+				axios.post(`${prefixAPI}/news`, values)
+				.then(response => {
+					message.success(response.data.message);
+					form.resetFields();
+					this.setState({
+			      visibleNewsEditModal: false,
+			    });
+					this.fetchData();
+				})
+				.catch(err => {
+					console.log(err);
+				})
       }
     });
   }
@@ -74,35 +101,56 @@ export default class News extends React.Component {
 	//new function
 }
 
-class NewsEditForm extends React.Component {
-	state = {
-		currentNews:{}
+const NewsEditForm = Form.create()(
+	class extends React.Component{
+		render() {
+			const { visible, onCancel, onSubmit, form } = this.props;
+			const { getFieldDecorator } = form;
+			return (
+				<Modal
+          visible={visible}
+          title="发布新闻"
+          okText="保存"
+          onCancel={onCancel}
+          onOk={onSubmit}
+        >
+					<Form style={{ paddingTop:20 }}>
+						<FormItem {...formItemLayout} label="标题">
+							{getFieldDecorator('title', {
+								rules: [{
+									required: true,
+									message: '标题不能为空！',
+								}]
+							})(
+								<Input placeholder="请输入标题" />
+							)}
+						</FormItem>
+						<FormItem {...formItemLayout} label="栏目">
+							{getFieldDecorator('type', {
+								rules: [{
+									required: true,
+									message: '栏目不能为空！',
+								}],
+							})(
+								<Input placeholder="请输入栏目" />
+							)}
+						</FormItem>
+						<FormItem {...formItemLayout} label="作者">
+							{getFieldDecorator('author', {
+								rules: [{
+									required: true,
+									message: '作者不能为空！',
+								}],
+							})(
+								<Input placeholder="请输入作者" />
+							)}
+						</FormItem>
+					</Form>
+				</Modal>
+			)
+		}
 	}
-	componentWillReceiveProps(nextProps){
-		// console.log(nextProps);
-	}
-	render() {
-		const currentNews = this.state.currentNews;
-		const { getFieldDecorator } = this.props.form;
-		return (
-			<Form style={{ paddingTop:20 }}>
-				<FormItem {...formItemLayout} label="标题">
-					{getFieldDecorator('title', {
-						rules: [{
-							required: true,
-							message: '标题不能为空！',
-						}],
-						initialValue: currentNews.title || ''
-					})(
-						<Input placeholder="请输入标题" />
-					)}
-				</FormItem>
-			</Form>
-		)
-	}
-}
-
-const WrappedNewsEditForm = Form.create()(NewsEditForm);
+)
 
 //表单布局
 const formItemLayout = {
