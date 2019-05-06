@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table, Button, Modal, Form, Input, message } from 'antd';
 const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
+const confirm = Modal.confirm;
 
 export default class News extends React.Component {
   constructor(props) {
@@ -41,7 +42,7 @@ export default class News extends React.Component {
         <span>
           <ButtonGroup>
 							<Button onClick={e => {this.showNewsEditModal(e, '编辑新闻', record.id)}}>编辑</Button>
-              <Button>删除</Button>
+              <Button onClick={e => {this.handleDelete(e, record.id)}}>删除</Button>
           </ButtonGroup>
         </span>
       ),
@@ -144,6 +145,32 @@ export default class News extends React.Component {
 			}
 		});
   }
+
+	handleDelete = (e, id) => {
+		let that = this;
+		confirm({
+	    title: '确认删除吗?',
+	    onOk() {
+	      return new Promise((resolve, reject) => {
+					axios.get(`${prefixAPI}/news/${id}/delete`)
+					.then(res => {
+						if (res.data.status == 0) {
+							message.success(res.data.message);
+							that.fetchData();
+						}else {
+							message.error(res.data.message);
+						}
+						resolve();
+					})
+					.catch(err => {
+						console.log(err);
+					})
+	      }).catch(() => console.log('Oops errors!'));
+	    },
+	    onCancel() {},
+	  });
+
+	}
 	//new function
 }
 
@@ -159,6 +186,8 @@ const NewsEditForm = Form.create()(
           okText="保存"
           onCancel={onCancel}
           onOk={onSubmit}
+					maskClosable={false}
+					width={1000}
         >
 					<Form style={{ paddingTop:20 }}>
 						<FormItem {...formItemLayout} label="标题">

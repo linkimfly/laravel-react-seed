@@ -10,7 +10,7 @@ class NewsController extends Controller
 {
 	public function index()
 	{
-		$news = News::all();
+		$news = News::where('is_delete', 0)->get();
 		return response()->json([
 			'news' => $news
 		]);
@@ -20,7 +20,7 @@ class NewsController extends Controller
 	{
 		$currentNews = News::findOrFail($id);
 
-		if (!$currentNews) {
+		if (!$currentNews || $currentNews->is_delete) {
 			return response()->json([
 				'status' => 1,
 				'message' => '未找到相关新闻，请联系网站管理员！',
@@ -39,7 +39,7 @@ class NewsController extends Controller
 
 		if (array_has($inputs, 'id')) {
 			$news = News::findOrFail($inputs['id']);
-			if (!$news) {
+			if (!$news || $news->is_delete) {
 				return response()->json([
 					'status' => 1,
 					'message' => '未找到相关新闻，请联系网站管理员！'
@@ -58,6 +58,24 @@ class NewsController extends Controller
 		return response()->json([
 			'status' => 0,
 			'message' => '保存成功！'
+		]);
+	}
+
+	public function delete($id)
+	{
+		$currentNews = News::findOrFail($id);
+		if (!$currentNews) {
+			return response()->json([
+				'status' => 1,
+				'message' => '未找到相关新闻，请联系网站管理员！'
+			]);
+		}
+
+		$currentNews->is_delete = 1;
+		$currentNews->save();
+		return response()->json([
+			'status' => 0,
+			'message' => '删除成功！'
 		]);
 	}
 }

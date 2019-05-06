@@ -20,6 +20,7 @@ class CreateNewsTable extends Migration
 			$table->string('author');
 			$table->longText('content_raw')->nullable();
 			$table->longText('content_html')->nullable();
+			$table->boolean('is_delete')->default(0);
             $table->timestamps();
         });
     }
