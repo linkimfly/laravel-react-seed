@@ -5,14 +5,21 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\Models\Type;
 
 class NewsController extends Controller
 {
 	public function index()
 	{
 		$news = News::where('is_delete', 0)->get();
+		foreach ($news as $currentNews) {
+			$currentNews->type = $currentNews->getType;
+		}
+		$types = Type::all();
+
 		return response()->json([
-			'news' => $news
+			'news' => $news,
+			'types' => $types
 		]);
 	}
 

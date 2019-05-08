@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal, Form, Input, message } from 'antd';
+import { Table, Button, Modal, Form, Input, message, Select } from 'antd';
 const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
+const Option = Select.Option;
 
 export default class News extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ export default class News extends React.Component {
     this.state = {
 			news: [],
 			currentNews: null,
+			types: [],
 			loading: true,
 			visibleNewsEditModal: false,
     };
@@ -24,7 +26,7 @@ export default class News extends React.Component {
 		  key: 'title',
 		}, {
 		  title: '栏目',
-		  dataIndex: 'type',
+		  dataIndex: 'type.name',
 		  key: 'type',
 		}, {
 		  title: '作者',
@@ -58,6 +60,7 @@ export default class News extends React.Component {
 					onCancel={this.handleCancel}
 					onSubmit={this.handleSubmit}
 					title={this.state.newsEditModalTitle}
+					types={this.state.types}
 				/>
       </div>
     )
@@ -70,11 +73,13 @@ export default class News extends React.Component {
 		axios.get(`${prefixAPI}/news`)
 		.then(response => {
 			let news = response.data.news;
+			let types = response.data.types;
 			news.map(currentNews => {
 				currentNews.key = currentNews.id;
 			})
 			this.setState({
 				news: news,
+				types: types,
 				loading: false,
 			})
 		})
@@ -177,7 +182,7 @@ export default class News extends React.Component {
 const NewsEditForm = Form.create()(
 	class extends React.Component{
 		render() {
-			const { visible, onCancel, onSubmit, form, title } = this.props;
+			const { visible, onCancel, onSubmit, form, title, types } = this.props;
 			const { getFieldDecorator } = form;
 			return (
 				<Modal
@@ -207,7 +212,11 @@ const NewsEditForm = Form.create()(
 									message: '栏目不能为空！',
 								}],
 							})(
-								<Input placeholder="请输入栏目" />
+								<Select placeholder="请选择栏目">
+									{types.map(type => (
+										<Option key={type.code}>{type.name}</Option>
+									))}
+						    </Select>
 							)}
 						</FormItem>
 						<FormItem {...formItemLayout} label="作者">
@@ -230,9 +239,5 @@ const NewsEditForm = Form.create()(
 //表单布局
 const formItemLayout = {
   labelCol: { span: 4 },
-  wrapperCol: { span: 8 },
-};
-const formTailLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 8, offset: 4 },
+  wrapperCol: { span: 16 },
 };
