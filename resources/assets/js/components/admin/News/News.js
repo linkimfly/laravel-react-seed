@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon } from 'antd';
+import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon, Tag } from 'antd';
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
 const ButtonGroup = Button.Group;
@@ -24,8 +24,13 @@ export default class News extends React.Component {
   render(){
 		const columns = [{
 		  title: '标题',
-		  dataIndex: 'title',
 		  key: 'title',
+			render: (text, record) => (
+				<div>
+					<span style={{ marginRight: 5 }}>{record.title}</span>
+					{record.is_top ? <Tag color="blue">置顶</Tag> : ''}
+				</div>
+			)
 		}, {
 		  title: '栏目',
 		  dataIndex: 'type.name',
@@ -97,7 +102,6 @@ export default class News extends React.Component {
 			axios.get(`${prefixAPI}/news/${id}`)
 			.then(res => {
 				let currentNews = res.data.current_news;
-				console.log(currentNews);
 				this.formRef.props.form.setFieldsValue({
 					title: currentNews.title,
 					type: currentNews.type,

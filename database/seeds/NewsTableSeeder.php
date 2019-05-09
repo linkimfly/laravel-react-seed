@@ -13,7 +13,7 @@ class NewsTableSeeder extends Seeder
     {
 		DB::table('news')->insert([
             'title' => '测试标题',
-            'type' => '新闻通知',
+            'type' => 'notices',
 			'author' => '电子科技大学',
         ]);
     }
