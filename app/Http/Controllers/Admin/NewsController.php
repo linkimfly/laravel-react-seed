@@ -69,6 +69,33 @@ class NewsController extends Controller
 		]);
 	}
 
+	public function top($id)
+	{
+		$currentNews = News::findOrFail($id);
+		if (!$currentNews) {
+			return response()->json([
+				'status' => 1,
+				'message' => '未找到相关新闻，请联系网站管理员！'
+			]);
+		}
+
+		if ($currentNews->is_top) {
+			$currentNews->is_top = 0;
+			$currentNews->save();
+			return response()->json([
+				'status' => 0,
+				'message' => '已取消置顶！'
+			]);
+		}else {
+			$currentNews->is_top = 1;
+			$currentNews->save();
+			return response()->json([
+				'status' => 0,
+				'message' => '已置顶！'
+			]);
+		}
+	}
+
 	public function delete($id)
 	{
 		$currentNews = News::findOrFail($id);

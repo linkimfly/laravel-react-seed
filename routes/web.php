@@ -24,6 +24,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 	Route::namespace('Admin')->prefix('admin-api')->group(function (){
 		Route::get('news', 'NewsController@index');
 		Route::get('news/{id}', 'NewsController@show');
+		Route::get('news/{id}/top', 'NewsController@top');
 		Route::get('news/{id}/delete', 'NewsController@delete');
 		Route::post('news', 'NewsController@update');
 		Route::get('types', 'TypeController@index');

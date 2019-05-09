@@ -41,12 +41,13 @@ export default class News extends React.Component {
 		}, {
       title: '操作',
       key: 'action',
-      width: 180,
+      width: 250,
       render: (text, record) => (
         <span>
           <ButtonGroup>
-							<Button onClick={e => {this.showNewsEditModal(e, '编辑新闻', record.id)}}>编辑</Button>
-              <Button onClick={e => {this.handleDelete(e, record.id)}}>删除</Button>
+						<Button onClick={e => {this.showNewsEditModal(e, '编辑新闻', record.id)}}>编辑</Button>
+						<Button onClick={e => {this.handleTop(e, record.id)}}>置顶</Button>
+            <Button onClick={e => {this.handleDelete(e, record.id)}}>删除</Button>
           </ButtonGroup>
         </span>
       ),
@@ -198,7 +199,21 @@ export default class News extends React.Component {
 	    },
 	    onCancel() {},
 	  });
+	}
 
+	handleTop = (e, id) => {
+		axios.get(`${prefixAPI}/news/${id}/top`)
+		.then(res => {
+			if (res.data.status == 0) {
+				message.success(res.data.message);
+				this.fetchData();
+			}else {
+				message.error(res.data.message);
+			}
+		})
+		.catch(err => {
+			console.log(err);
+		})
 	}
 	//new function
 }
