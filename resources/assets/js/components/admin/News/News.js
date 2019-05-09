@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon } from 'antd';
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
 const ButtonGroup = Button.Group;
@@ -96,10 +96,13 @@ export default class News extends React.Component {
 			axios.get(`${prefixAPI}/news/${id}`)
 			.then(res => {
 				let currentNews = res.data.current_news;
+				console.log(currentNews);
 				this.formRef.props.form.setFieldsValue({
 					title: currentNews.title,
 					type: currentNews.type,
 					author: currentNews.author,
+					content_raw: BraftEditor.createEditorState(currentNews.content_html),//TODO 目前只能通过传入 html 格式的数据初始化，更好的办法是使用 raw 格式的数据
+					attachments: JSON.parse(currentNews.attachments),
 				});
 				this.setState({
 					currentNews: currentNews,
@@ -126,6 +129,21 @@ export default class News extends React.Component {
 					values.content_html = values.content_raw.toHTML();
 					values.content_raw = values.content_raw.toRAW();
 				}
+				if (values.attachments) {
+					values.attachments = values.attachments.map(attachment => {
+						console.log(attachment);
+						if (attachment.response) {
+							return {
+								uid: attachment.uid,
+								name: attachment.name,
+								status: attachment.status,
+								url: attachment.response.url,
+							}
+						}else {
+							return attachment;
+						}
+					})
+				}
 				axios.post(`${prefixAPI}/news`, values)
 				.then(response => {
 					if (response.data.status == 0) {
@@ -150,9 +168,9 @@ export default class News extends React.Component {
   handleCancel = (e) => {
     this.setState({ visibleNewsEditModal: false }, ()=>{
 			if (this.state.currentNews) {
-				console.log(1);
 				this.setState({currentNews: null});
 				this.formRef.props.form.resetFields();
+				//TODO 目前无法清除编辑器中内容
 			}
 		});
   }
@@ -187,6 +205,14 @@ export default class News extends React.Component {
 
 const NewsEditForm = Form.create()(
 	class extends React.Component{
+		normFile = (e) => {
+	    console.log('Upload event:', e);
+	    if (Array.isArray(e)) {
+	      return e;
+	    }
+	    return e && e.fileList;
+	  }
+
 		render() {
 			const { visible, onCancel, onSubmit, form, title, types } = this.props;
 			const { getFieldDecorator } = form;
@@ -238,7 +264,9 @@ const NewsEditForm = Form.create()(
 							)}
 						</FormItem>
 						<FormItem {...formItemLayout} label="内容">
-							{getFieldDecorator('content_raw')(
+							{getFieldDecorator('content_raw', {
+								validateTrigger: 'onBlur'
+							})(
 								<BraftEditor
 									placeholder="请输入正文内容"
 									style={{
@@ -248,6 +276,24 @@ const NewsEditForm = Form.create()(
 								/>
 							)}
 						</FormItem>
+						<Form.Item  {...formItemLayout} label="附件">
+		          {getFieldDecorator('attachments', {
+		            valuePropName: 'fileList',
+		            getValueFromEvent: this.normFile,
+		          })(
+		            <Upload
+									name="file"
+									action={`${prefixAPI}/upload/file`}
+									headers={{
+				            'X-CSRF-TOKEN':document.head.querySelector('meta[name="csrf-token"]').content
+				          }}
+								>
+		              <Button>
+		                <Icon type="upload" /> 点此上传附件
+		              </Button>
+		            </Upload>
+		          )}
+		        </Form.Item>
 					</Form>
 				</Modal>
 			)

@@ -19,10 +19,7 @@ Route::get('/', 'HomeController@index')->name('home');
 //需要管理员权限
 Route::middleware(['auth', 'admin'])->group(function () {
 	Route::get('/admin', 'Admin\AdminController@index')->name('admin');
-});
 
-//需要开发者权限
-Route::middleware(['auth', 'dev'])->group(function () {
 	//api
 	Route::namespace('Admin')->prefix('admin-api')->group(function (){
 		Route::get('news', 'NewsController@index');
@@ -30,5 +27,11 @@ Route::middleware(['auth', 'dev'])->group(function () {
 		Route::get('news/{id}/delete', 'NewsController@delete');
 		Route::post('news', 'NewsController@update');
 		Route::get('types', 'TypeController@index');
+		Route::post('upload/file', 'UploadController@uploadFile');
 	});
+});
+
+//需要开发者权限
+Route::middleware(['auth', 'dev'])->group(function () {
+
 });

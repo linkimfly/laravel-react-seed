@@ -56,7 +56,8 @@ class NewsController extends Controller
 			$news = new News;
 		}
 
-		$inputs = array_except($inputs, ['id', 'created_at', 'updated_at']);
+		$news->attachments = json_encode($request->attachments);
+		$inputs = array_except($inputs, ['id', 'created_at', 'updated_at', 'attachments']);
 		foreach ($inputs as $key => $value) {
 			$news->$key = $value;
 		}
