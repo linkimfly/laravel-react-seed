@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Button, Modal, Form, Input, message, Select } from 'antd';
+import BraftEditor from 'braft-editor'
+import 'braft-editor/dist/index.css'
 const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -120,6 +122,10 @@ export default class News extends React.Component {
 				if (this.state.currentNews) {
 					values.id = this.state.currentNews.id;
 				}
+				if (values.content_raw) {
+					values.content_html = values.content_raw.toHTML();
+					values.content_raw = values.content_raw.toRAW();
+				}
 				axios.post(`${prefixAPI}/news`, values)
 				.then(response => {
 					if (response.data.status == 0) {
@@ -192,7 +198,9 @@ const NewsEditForm = Form.create()(
           onCancel={onCancel}
           onOk={onSubmit}
 					maskClosable={false}
-					width={1000}
+					width={1200}
+					centered={true}
+					bodyStyle={{height: '80vh', overflow: 'auto'}}
         >
 					<Form style={{ paddingTop:20 }}>
 						<FormItem {...formItemLayout} label="标题">
@@ -227,6 +235,17 @@ const NewsEditForm = Form.create()(
 								}],
 							})(
 								<Input placeholder="请输入作者" />
+							)}
+						</FormItem>
+						<FormItem {...formItemLayout} label="内容">
+							{getFieldDecorator('content_raw')(
+								<BraftEditor
+									placeholder="请输入正文内容"
+									style={{
+										border: '1px solid #d1d1d1',
+    								borderRadius: 5
+									}}
+								/>
 							)}
 						</FormItem>
 					</Form>
