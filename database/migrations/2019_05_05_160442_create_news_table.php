@@ -21,6 +21,7 @@ class CreateNewsTable extends Migration
 			$table->longText('content_raw')->nullable();
 			$table->longText('content_html')->nullable();
 			$table->longText('attachments')->nullable();
+			$table->integer('view')->default(0);
 			$table->boolean('is_top')->default(0);
 			$table->boolean('is_delete')->default(0);
             $table->timestamps();

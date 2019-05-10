@@ -51,6 +51,10 @@ export default class News extends React.Component {
 		  dataIndex: 'author',
 		  key: 'author',
 		}, {
+		  title: '浏览量',
+		  dataIndex: 'view',
+		  key: 'view',
+		}, {
 		  title: '创建时间',
 		  dataIndex: 'created_at',
 		  key: 'created_at',
