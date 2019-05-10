@@ -309,14 +309,6 @@ export default class News extends React.Component {
 
 const NewsEditForm = Form.create()(
 	class extends React.Component{
-		normFile = (e) => {
-	    console.log('Upload event:', e);
-	    if (Array.isArray(e)) {
-	      return e;
-	    }
-	    return e && e.fileList;
-	  }
-
 		render() {
 			const { visible, onCancel, onSubmit, form, title, types } = this.props;
 			const { getFieldDecorator } = form;
@@ -373,6 +365,14 @@ const NewsEditForm = Form.create()(
 							})(
 								<BraftEditor
 									placeholder="请输入正文内容"
+									media={{
+                    uploadFn:this.uploadFn,
+                    accepts:{
+                      image: 'image/png,image/jpeg,image/gif',
+                      video: 'video/mp4',
+											audio: false,
+                    }
+                  }}
 									style={{
 										border: '1px solid #d1d1d1',
     								borderRadius: 5
@@ -401,6 +401,46 @@ const NewsEditForm = Form.create()(
 					</Form>
 				</Modal>
 			)
+		}
+		normFile = (e) => {
+			console.log('Upload event:', e);
+			if (Array.isArray(e)) {
+				return e;
+			}
+			return e && e.fileList;
+		}
+
+		uploadFn = (param) => {
+			const serverURL = `${prefixAPI}/upload/file`
+			const xhr = new XMLHttpRequest
+			const fd = new FormData()
+
+			const successFn = (response) => {
+				// 假设服务端直接返回文件上传后的地址
+				// 上传成功后调用param.success并传入上传后的文件地址
+				param.success({
+					url: JSON.parse(xhr.responseText).url
+				})
+			}
+			const progressFn = (event) => {
+				// 上传进度发生变化时调用param.progress
+				param.progress(event.loaded / event.total * 100)
+			}
+			const errorFn = (response) => {
+				// 上传发生错误时调用param.error
+				param.error({
+					msg: '上传失败！'
+				})
+			}
+			xhr.upload.addEventListener("progress", progressFn, false)
+			xhr.addEventListener("load", successFn, false)
+			xhr.addEventListener("error", errorFn, false)
+			xhr.addEventListener("abort", errorFn, false)
+
+			fd.append('file', param.file)
+			xhr.open('POST', serverURL, true)
+			xhr.setRequestHeader('X-CSRF-TOKEN', document.head.querySelector('meta[name="csrf-token"]').content);
+			xhr.send(fd)
 		}
 	}
 )
