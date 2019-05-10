@@ -6,12 +6,23 @@ const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const Option = Select.Option;
+const Search = Input.Search;
 
 export default class News extends React.Component {
   constructor(props) {
     super();
     this.state = {
 			news: [],
+			order: null,
+			isTop: null,
+			search: null,
+			pagination: {
+        showSizeChanger: true,
+        showQuickJumper: true,
+				pageSizeOptions: ['5', '10', '15', '20'],
+        defaultCurrent: 1,
+        defaultPageSize: 10
+      },
 			currentNews: null,
 			types: [],
 			loading: true,
@@ -59,8 +70,33 @@ export default class News extends React.Component {
     }];
     return (
       <div style={{ padding:20 }}>
-				<Button type="primary" onClick={e => {this.showNewsEditModal(e, '发布新闻')}}>发布新闻</Button>
-      	<Table dataSource={this.state.news} columns={columns} loading={this.state.loading} />
+				<div style={{overflow:'hidden'}}>
+          <Select defaultValue="created_at_desc" style={{ width: 120, marginRight: 10 }} onChange={this.handleChangeOrder}>
+						<Option value="created_at_desc">最新发布</Option>
+            <Option value="created_at">最早发布</Option>
+            <Option value="view_desc">最多浏览</Option>
+          </Select>
+          <Select placeholder="按置顶状态筛选" style={{ width: 140, marginRight: 10 }} onChange={this.handleChangeTop} allowClear>
+						<Option value={1}>置顶</Option>
+            <Option value={0}>未置顶</Option>
+          </Select>
+          <Search
+            placeholder="搜索标题"
+            onSearch={this.handleSearch}
+            style={{ width: 200, marginRight: 10 }}
+          />
+					<Button type="primary" onClick={e => {this.showNewsEditModal(e, '发布新闻')}} style={{ float: 'right' }}>发布新闻</Button>
+        </div>
+
+      	<Table
+					bordered
+					dataSource={this.state.news}
+					columns={columns}
+					pagination={this.state.pagination}
+					loading={this.state.loading}
+					onChange={this.handleTableChange}
+					style={{ marginTop: 10 }}
+				/>
 
 				<NewsEditForm
 					wrappedComponentRef={inst => this.formRef = inst}
@@ -74,19 +110,41 @@ export default class News extends React.Component {
     )
   }
 
-	fetchData = () => {
+	fetchData = (currentPage=null, pageSize=null) => {
 		if (this.state.loading != true) {
 			this.setState({loading: true});
 		}
-		axios.get(`${prefixAPI}/news`)
+
+		const pager = { ...this.state.pagination };
+    if (!currentPage) {
+      currentPage = pager.current || pager.defaultCurrent;
+    }
+    if (!pageSize) {
+      pageSize = pager.pageSize || pager.defaultPageSize;
+    }
+
+		let params = `?page_size=${pageSize}&page=${currentPage}&order=${this.state.order || 'created_at_desc'}`;
+		if (this.state.isTop) {
+			params += `&is_top=${this.state.isTop}`;
+		}
+		if (this.state.search) {
+			params += `&search=${this.state.search}`;
+		}
+
+		axios.get(`${prefixAPI}/news${params}`)
 		.then(response => {
 			let news = response.data.news;
 			let types = response.data.types;
-			news.map(currentNews => {
+			const pager = { ...this.state.pagination };
+			pager.total = news.total;
+			pager.current = news.current_page;
+			pager.pageSize = Number(news.per_page);
+			news.data.map(currentNews => {
 				currentNews.key = currentNews.id;
 			})
 			this.setState({
-				news: news,
+				news: news.data,
+				pagination: pager,
 				types: types,
 				loading: false,
 			})
@@ -106,7 +164,7 @@ export default class News extends React.Component {
 					title: currentNews.title,
 					type: currentNews.type,
 					author: currentNews.author,
-					content_raw: BraftEditor.createEditorState(currentNews.content_html),//TODO 目前只能通过传入 html 格式的数据初始化，更好的办法是使用 raw 格式的数据
+					content_raw: BraftEditor.createEditorState(JSON.parse(currentNews.content_raw)),
 					attachments: JSON.parse(currentNews.attachments),
 				});
 				this.setState({
@@ -175,7 +233,9 @@ export default class News extends React.Component {
 			if (this.state.currentNews) {
 				this.setState({currentNews: null});
 				this.formRef.props.form.resetFields();
-				//TODO 目前无法清除编辑器中内容
+				this.formRef.props.form.setFieldsValue({
+					content_raw: BraftEditor.createEditorState(null),
+				});
 			}
 		});
   }
@@ -219,6 +279,27 @@ export default class News extends React.Component {
 			console.log(err);
 		})
 	}
+
+	handleChangeOrder = (value) => {
+		this.setState({ order: value }, () => this.fetchData());
+	}
+
+	handleChangeTop = (value) => {
+		this.setState({ isTop: value }, () => this.fetchData());
+	}
+
+  handleSearch = (value) => {
+    this.setState({ search:value }, () => this.fetchData());
+  }
+
+	handleTableChange = (pagination, filters, sorter) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    this.setState({
+      pagination: pager,
+    });
+    this.fetchData(pagination.current, pagination.pageSize);
+  }
 	//new function
 }
 

@@ -9,9 +9,26 @@ use App\Models\Type;
 
 class NewsController extends Controller
 {
-	public function index()
+	public function index(Request $request)
 	{
-		$news = News::where('is_delete', 0)->get();
+		$order = $request->order;
+        $isTop = $request->is_top;
+        $search = $request->search;
+		$news = News::where('is_delete', 0)
+					->when(isset($isTop), function ($query) use ($isTop) {
+                        return $query->where('is_top', $isTop);
+                    })->when(isset($search), function ($query) use ($search) {
+                        return $query->where('title', 'like', '%'.$search.'%');
+                    })->when(isset($order), function ($query) use ($order) {
+						$arr = explode('_', $order);
+						$isDesc = end($arr) == 'desc';
+						if ($isDesc == 'desc') {
+							array_pop($arr);
+							return $query->orderBy(join('_', $arr), 'desc');
+						}else {
+							return $query->orderBy($order);
+						}
+                    })->paginate($request->page_size);
 		foreach ($news as $currentNews) {
 			$currentNews->type = $currentNews->getType;
 		}

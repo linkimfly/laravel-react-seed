@@ -1,69 +1,72 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Layout, Menu, Icon, Dropdown, Avatar } from 'antd';
+import { Layout, Menu, Icon, Dropdown, Avatar, LocaleProvider } from 'antd';
 const { Header, Sider, Content } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom';
 import News from './News/News';
 import Slide from './Slide/Slide';
 import Setting from './Setting/Setting';
 import styles from "./Main.css";
+import zhCN from 'antd/lib/locale-provider/zh_CN';
 
 class SiderLayout extends React.Component {
   render() {
     return (
-      <HashRouter>
-        <Layout className="layout">
-          <Sider collapsible >
-            <div className="layout__logo" />
-            <Menu
-              theme="dark"
-              defaultSelectedKeys={this.menuAutoSelect()}>
-              <Menu.Item key="news">
-                <Link to="/news">
-                  <Icon type="file-text" />
-                  <span>新闻管理</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="slides">
-                <Link to="/slides">
-                  <Icon type="retweet" />
-                  <span>轮播管理</span>
-                </Link>
-              </Menu.Item>
-							{user.level == 'dev'?
-								<Menu.Item key="settings">
-	                <Link to="/settings/types">
-	                  <Icon type="setting" />
-	                  <span>设置中心</span>
+			<LocaleProvider locale={zhCN}>
+	      <HashRouter>
+	        <Layout className="layout">
+	          <Sider collapsible >
+	            <div className="layout__logo" />
+	            <Menu
+	              theme="dark"
+	              defaultSelectedKeys={this.menuAutoSelect()}>
+	              <Menu.Item key="news">
+	                <Link to="/news">
+	                  <Icon type="file-text" />
+	                  <span>新闻管理</span>
 	                </Link>
-	              </Menu.Item>:''
-							}
-            </Menu>
-          </Sider>
-          <Layout>
-            <Header className="layout__header">
-              <div className="layout__header__right">
-                <Dropdown overlay={menu}>
-                  <a href="#">
-                    <Avatar src={'images/default-avatar.png'} />
-                    <span className="layout__header__right__name">username</span>
-                  </a>
-                </Dropdown>
-              </div>
-            </Header>
-            <Content className="layout__content">
-              <Switch>
-                <Route path="/news" exact component={News}/>
-								<Route path="/slides" exact component={Slide}/>
+	              </Menu.Item>
+	              <Menu.Item key="slides">
+	                <Link to="/slides">
+	                  <Icon type="retweet" />
+	                  <span>轮播管理</span>
+	                </Link>
+	              </Menu.Item>
+								{user.level == 'dev'?
+									<Menu.Item key="settings">
+		                <Link to="/settings/types">
+		                  <Icon type="setting" />
+		                  <span>设置中心</span>
+		                </Link>
+		              </Menu.Item>:''
+								}
+	            </Menu>
+	          </Sider>
+	          <Layout>
+	            <Header className="layout__header">
+	              <div className="layout__header__right">
+	                <Dropdown overlay={menu}>
+	                  <a href="#">
+	                    <Avatar src={'images/default-avatar.png'} />
+	                    <span className="layout__header__right__name">username</span>
+	                  </a>
+	                </Dropdown>
+	              </div>
+	            </Header>
+	            <Content className="layout__content">
+	              <Switch>
+	                <Route path="/news" exact component={News}/>
+									<Route path="/slides" exact component={Slide}/>
 
-								{user.level == 'dev'?<Route path="/settings/:module" exact component={Setting}/>:''}
+									{user.level == 'dev'?<Route path="/settings/:module" exact component={Setting}/>:''}
 
-                <Redirect to="/news" />
-              </Switch>
-            </Content>
-          </Layout>
-        </Layout>
-      </HashRouter>
+	                <Redirect to="/news" />
+	              </Switch>
+	            </Content>
+	          </Layout>
+	        </Layout>
+	      </HashRouter>
+			</LocaleProvider>
     );
   }
   //左侧菜单选中状态根据 url 自动转换
