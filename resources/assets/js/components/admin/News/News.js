@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon, Tag } from 'antd';
+import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon, Tag, Spin } from 'antd';
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
 const ButtonGroup = Button.Group;
@@ -26,6 +26,7 @@ export default class News extends React.Component {
 			currentNews: null,
 			types: [],
 			loading: true,
+			newsEditModalLoading: false,
 			visibleNewsEditModal: false,
     };
   }
@@ -109,6 +110,7 @@ export default class News extends React.Component {
 					onSubmit={this.handleSubmit}
 					title={this.state.newsEditModalTitle}
 					types={this.state.types}
+					loading={this.state.newsEditModalLoading}
 				/>
       </div>
     )
@@ -159,8 +161,12 @@ export default class News extends React.Component {
 	}
 
 	showNewsEditModal = (e, title=null, id=null) => {
-		this.setState({ newsEditModalTitle: title });
+		this.setState({
+			newsEditModalTitle: title,
+			visibleNewsEditModal: true,
+		});
 		if (id) {
+			this.setState({ newsEditModalLoading: true });
 			axios.get(`${prefixAPI}/news/${id}`)
 			.then(res => {
 				let currentNews = res.data.current_news;
@@ -173,16 +179,13 @@ export default class News extends React.Component {
 				});
 				this.setState({
 					currentNews: currentNews,
-					visibleNewsEditModal: true
+					newsEditModalLoading: false,
 				});
 			})
 			.catch(err => {
 				console.log(err);
 			})
-		}else {
-			this.setState({ visibleNewsEditModal: true });
 		}
-
   }
 
   handleSubmit = (e) => {
@@ -238,7 +241,7 @@ export default class News extends React.Component {
 				this.setState({currentNews: null});
 				this.formRef.props.form.resetFields();
 				this.formRef.props.form.setFieldsValue({
-					content_raw: BraftEditor.createEditorState(null),
+					content_raw: BraftEditor.createEditorState(null)
 				});
 			}
 		});
@@ -310,7 +313,7 @@ export default class News extends React.Component {
 const NewsEditForm = Form.create()(
 	class extends React.Component{
 		render() {
-			const { visible, onCancel, onSubmit, form, title, types } = this.props;
+			const { visible, onCancel, onSubmit, form, title, types, loading } = this.props;
 			const { getFieldDecorator } = form;
 			return (
 				<Modal
@@ -324,81 +327,83 @@ const NewsEditForm = Form.create()(
 					centered={true}
 					bodyStyle={{height: '80vh', overflow: 'auto'}}
         >
-					<Form style={{ paddingTop:20 }}>
-						<FormItem {...formItemLayout} label="标题">
-							{getFieldDecorator('title', {
-								rules: [{
-									required: true,
-									message: '标题不能为空！',
-								}]
-							})(
-								<Input placeholder="请输入标题" />
-							)}
-						</FormItem>
-						<FormItem {...formItemLayout} label="栏目">
-							{getFieldDecorator('type', {
-								rules: [{
-									required: true,
-									message: '栏目不能为空！',
-								}],
-							})(
-								<Select placeholder="请选择栏目">
-									{types.map(type => (
-										<Option key={type.code}>{type.name}</Option>
-									))}
-						    </Select>
-							)}
-						</FormItem>
-						<FormItem {...formItemLayout} label="作者">
-							{getFieldDecorator('author', {
-								rules: [{
-									required: true,
-									message: '作者不能为空！',
-								}],
-							})(
-								<Input placeholder="请输入作者" />
-							)}
-						</FormItem>
-						<FormItem {...formItemLayout} label="内容">
-							{getFieldDecorator('content_raw', {
-								validateTrigger: 'onBlur'
-							})(
-								<BraftEditor
-									placeholder="请输入正文内容"
-									media={{
-                    uploadFn:this.uploadFn,
-                    accepts:{
-                      image: 'image/png,image/jpeg,image/gif',
-                      video: 'video/mp4',
-											audio: false,
-                    }
-                  }}
-									style={{
-										border: '1px solid #d1d1d1',
-    								borderRadius: 5
-									}}
-								/>
-							)}
-						</FormItem>
-						<Form.Item  {...formItemLayout} label="附件">
-		          {getFieldDecorator('attachments', {
-		            valuePropName: 'fileList',
-		            getValueFromEvent: this.normFile,
-		          })(
-		            <Upload
-									name="file"
-									action={`${prefixAPI}/upload/file`}
-									headers={{
-				            'X-CSRF-TOKEN':document.head.querySelector('meta[name="csrf-token"]').content
-				          }}
-								>
-		              <Button>
-		                <Icon type="upload" /> 点此上传附件
-		              </Button>
-		            </Upload>
-		          )}
-		        </Form.Item>
-					</Form>
+					<Spin spinning={loading}>
+						<Form style={{ paddingTop:20 }}>
+							<FormItem {...formItemLayout} label="标题">
+								{getFieldDecorator('title', {
+									rules: [{
+										required: true,
+										message: '标题不能为空！',
+									}]
+								})(
+									<Input placeholder="请输入标题" />
+								)}
+							</FormItem>
+							<FormItem {...formItemLayout} label="栏目">
+								{getFieldDecorator('type', {
+									rules: [{
+										required: true,
+										message: '栏目不能为空！',
+									}],
+								})(
+									<Select placeholder="请选择栏目">
+										{types.map(type => (
+											<Option key={type.code}>{type.name}</Option>
+										))}
+							    </Select>
+								)}
+							</FormItem>
+							<FormItem {...formItemLayout} label="作者">
+								{getFieldDecorator('author', {
+									rules: [{
+										required: true,
+										message: '作者不能为空！',
+									}],
+								})(
+									<Input placeholder="请输入作者" />
+								)}
+							</FormItem>
+							<FormItem {...formItemLayout} label="内容">
+								{getFieldDecorator('content_raw', {
+									validateTrigger: 'onBlur'
+								})(
+									<BraftEditor
+										placeholder="请输入正文内容"
+										media={{
+	                    uploadFn:this.uploadFn,
+	                    accepts:{
+	                      image: 'image/png,image/jpeg,image/gif',
+	                      video: 'video/mp4',
+												audio: false,
+	                    }
+	                  }}
+										style={{
+											border: '1px solid #d1d1d1',
+	    								borderRadius: 5
+										}}
+									/>
+								)}
+							</FormItem>
+							<Form.Item  {...formItemLayout} label="附件">
+			          {getFieldDecorator('attachments', {
+			            valuePropName: 'fileList',
+			            getValueFromEvent: this.normFile,
+			          })(
+			            <Upload
+										name="file"
+										action={`${prefixAPI}/upload/file`}
+										headers={{
+					            'X-CSRF-TOKEN':document.head.querySelector('meta[name="csrf-token"]').content
+					          }}
+									>
+			              <Button>
+			                <Icon type="upload" /> 点此上传附件
+			              </Button>
+			            </Upload>
+			          )}
+			        </Form.Item>
+						</Form>
+					</Spin>
 				</Modal>
 			)
 		}
