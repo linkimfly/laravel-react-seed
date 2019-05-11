@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon, Tag, Spin } from 'antd';
+import { Table, Button, Modal, Form, Input, message, Select, Upload, Icon, Tag, Spin, DatePicker } from 'antd';
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
+import moment from 'moment';
 const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -170,12 +171,14 @@ export default class News extends React.Component {
 			axios.get(`${prefixAPI}/news/${id}`)
 			.then(res => {
 				let currentNews = res.data.current_news;
+				console.log(moment(currentNews.created_at));
 				this.formRef.props.form.setFieldsValue({
 					title: currentNews.title,
 					type: currentNews.type,
 					author: currentNews.author,
 					content_raw: BraftEditor.createEditorState(JSON.parse(currentNews.content_raw)),
 					attachments: JSON.parse(currentNews.attachments),
+					created_at: moment(currentNews.created_at),
 				});
 				this.setState({
 					currentNews: currentNews,
@@ -213,6 +216,9 @@ export default class News extends React.Component {
 							return attachment;
 						}
 					})
+				}
+				if (values.created_at) {
+					values.created_at = values.created_at.format('YYYY-MM-DD HH:mm:ss');
 				}
 				axios.post(`${prefixAPI}/news`, values)
 				.then(response => {
@@ -315,6 +321,7 @@ const NewsEditForm = Form.create()(
 		render() {
 			const { visible, onCancel, onSubmit, form, title, types, loading } = this.props;
 			const { getFieldDecorator } = form;
+
 			return (
 				<Modal
           visible={visible}
@@ -402,6 +409,14 @@ const NewsEditForm = Form.create()(
 			            </Upload>
 			          )}
 			        </Form.Item>
+							<Form.Item {...formItemLayout} label="创建时间">
+								{getFieldDecorator('created_at')(
+									<DatePicker
+							      showTime
+							      placeholder="点此选择日期时间"
+							    />
+								)}
+							</Form.Item>
 						</Form>
 					</Spin>
 				</Modal>
