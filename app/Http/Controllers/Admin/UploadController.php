@@ -12,7 +12,7 @@ class UploadController extends Controller
 		$file = $request->file;
 		$fileName = $file->getClientOriginalName();
 		$fileNameMD5 = md5_file($file) . '.' . $file->extension();
-		$fileUrl = asset('/storage/files/' . $fileNameMD5);
+		$fileUrl = '/storage/files/' . $fileNameMD5;
 		$file->storeAs('public/files', $fileNameMD5);
 
 		return response()->json([

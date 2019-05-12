@@ -36,6 +36,10 @@ export default class News extends React.Component {
 	}
   render(){
 		const columns = [{
+		  title: 'ID',
+		  dataIndex: 'id',
+		  key: 'id',
+		}, {
 		  title: '标题',
 		  key: 'title',
 			render: (text, record) => (
@@ -216,6 +220,8 @@ export default class News extends React.Component {
 							return attachment;
 						}
 					})
+				}else {
+					delete values.attachments
 				}
 				if (values.created_at) {
 					values.created_at = values.created_at.format('YYYY-MM-DD HH:mm:ss');
