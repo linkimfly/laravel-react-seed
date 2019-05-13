@@ -48,13 +48,13 @@ export default class Slides extends React.Component {
 				}
 			}
 		}, {
-		  title: '点击量',
-		  dataIndex: 'click',
-		  key: 'click',
-		}, {
 		  title: '优先级',
 		  dataIndex: 'priority',
 		  key: 'priority',
+		}, {
+		  title: '点击量',
+		  dataIndex: 'click',
+		  key: 'click',
 		}, {
       title: '操作',
       key: 'action',
@@ -180,9 +180,10 @@ export default class Slides extends React.Component {
 						form.resetFields();
 						this.setState({
 							slide: null,
+							currentSelect: null,
 				      visibleSlideEditModal: false,
 				    });
-						this.formRef.deleteCoverUrlTemp();
+						this.formRef.resetSpecialValue();
 						this.fetchData();
 					}else {
 						message.error(response.data.message);
@@ -208,13 +209,20 @@ const SlideEditForm = Form.create()(
 			const { visible, onCancel, onSubmit, form, title, loading } = this.props;
 			const { getFieldDecorator } = form;
 
+			const currentSelect = this.state.currentSelect;
+
 			const generateFormByType = () => {
-				switch (this.state.currentSelect) {
+				switch (currentSelect) {
 					case 'internal':
 						return (
 							<React.Fragment>
 								<FormItem {...formItemLayout} label="文章 ID">
-									{getFieldDecorator('news_id')(
+									{getFieldDecorator('news_id', {
+										rules:[{
+												required: currentSelect == 'internal',
+												message: '文章 ID 不能为空！'
+										}]
+									})(
 										<InputNumber min={1} />
 									)}
 								</FormItem>
@@ -225,8 +233,23 @@ const SlideEditForm = Form.create()(
 						return (
 							<React.Fragment>
 								<FormItem {...formItemLayout} label="标题">
-									{getFieldDecorator('title')(
+									{getFieldDecorator('title', {
+										rules:[{
+												required: currentSelect == 'external',
+												message: '标题不能为空！'
+										}]
+									})(
 										<Input placeholder="请输入标题" />
+									)}
+								</FormItem>
+								<FormItem {...formItemLayout} label="链接">
+									{getFieldDecorator('target', {
+										rules:[{
+												required: currentSelect == 'external',
+												message: '链接不能为空！'
+										}]
+									})(
+										<Input placeholder="请输入包含 http:// 或者 https:// 的链接" />
 									)}
 								</FormItem>
 							</React.Fragment>
@@ -235,6 +258,16 @@ const SlideEditForm = Form.create()(
 					case 'none':
 						return (
 							<React.Fragment>
+								<FormItem {...formItemLayout} label="标题">
+									{getFieldDecorator('title', {
+										rules:[{
+												required: currentSelect == 'none',
+												message: '标题不能为空！'
+										}]
+									})(
+										<Input placeholder="请输入标题" />
+									)}
+								</FormItem>
 							</React.Fragment>
 						)
 						break;
@@ -299,6 +332,11 @@ const SlideEditForm = Form.create()(
 								)}
 							</FormItem>
 							{generateFormByType()}
+							<FormItem {...formItemLayout} label="优先级">
+								{getFieldDecorator('priority')(
+									<InputNumber min={0} />
+								)}
+							</FormItem>
 						</Form>
 					</Spin>
 				</Modal>
@@ -340,8 +378,11 @@ const SlideEditForm = Form.create()(
 			this.setState({ currentSelect: value });
 		}
 
-		deleteCoverUrlTemp = () => {
-			this.setState({ coverUrlTemp: null });
+		resetSpecialValue = () => {
+			this.setState({
+				coverUrlTemp: null,
+				currentSelect: null,
+			});
 		}
 	}
 )

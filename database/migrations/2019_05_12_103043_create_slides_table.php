@@ -16,7 +16,7 @@ class CreateSlidesTable extends Migration
         Schema::create('slides', function (Blueprint $table) {
             $table->increments('id');
 			$table->string('cover');
-			$table->string('type'); // internal, external
+			$table->string('type'); // internal, external, none
 			$table->string('title');
 			$table->string('target')->nullable();
 			$table->string('news_id')->nullable();

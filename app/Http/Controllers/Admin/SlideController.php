@@ -44,9 +44,14 @@ class SlideController extends Controller
 			$slide->cover = $fileUrl;
 		}
 
+		if ($request->priority) {
+			$slide->priority = $request->priority;
+		}
+
+		$slide->type = $request->type;
+
 		switch ($request->type) {
 			case 'internal':
-				$slide->type = $request->type;
 				$news = News::where('id', $request->news_id)->first();
 				if (!$news) {
 					return response()->json([
@@ -57,6 +62,13 @@ class SlideController extends Controller
 				$slide->title = $news->title;
 				$slide->target = '/news/' . $request->news_id;
 				$slide->news_id = $request->news_id;
+				break;
+			case 'external':
+				$slide->title = $request->title;
+				$slide->target = $request->target;
+				break;
+			case 'none':
+				$slide->title = $request->title;
 				break;
 			default:
 				return response()->json([
