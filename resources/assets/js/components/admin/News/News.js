@@ -175,7 +175,6 @@ export default class News extends React.Component {
 			axios.get(`${prefixAPI}/news/${id}`)
 			.then(res => {
 				let currentNews = res.data.current_news;
-				console.log(moment(currentNews.created_at));
 				this.formRef.props.form.setFieldsValue({
 					title: currentNews.title,
 					type: currentNews.type,
@@ -257,6 +256,7 @@ export default class News extends React.Component {
 				});
 			}
 		});
+		this.setState({ newsEditModalLoading: false });
   }
 
 	handleDelete = (e, id) => {
