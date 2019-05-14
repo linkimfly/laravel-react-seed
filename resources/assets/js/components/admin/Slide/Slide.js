@@ -30,6 +30,7 @@ export default class Slides extends React.Component {
 		}, {
 		  title: '类型',
 		  key: 'type',
+			width: 100,
 			render: (text, record) => {
 				switch (record.type) {
 					case 'internal': return '站内跳转'; break;
@@ -52,14 +53,16 @@ export default class Slides extends React.Component {
 		  title: '优先级',
 		  dataIndex: 'priority',
 		  key: 'priority',
+			width: 80,
 		}, {
 		  title: '点击量',
 		  dataIndex: 'click',
 		  key: 'click',
+			width: 80,
 		}, {
       title: '操作',
       key: 'action',
-      width: 250,
+      width: 160,
       render: (text, record) => (
         <span>
           <ButtonGroup>
@@ -358,7 +361,7 @@ const SlideEditForm = Form.create()(
 							        'X-CSRF-TOKEN':document.head.querySelector('meta[name="csrf-token"]').content
 							      }}
 									>
-		                {this.state.coverUrlTemp ? <img src={this.state.coverUrlTemp} style={{width:'100%'}} alt="cover" /> : (
+		                {this.state.coverUrlTemp ? <img src={this.state.coverUrlTemp} style={{width: 400}} alt="cover" /> : (
 								      <div>
 								        <Icon type={ this.state.coverUploading ? 'loading' : 'plus' } />
 								        <span>Upload</span>

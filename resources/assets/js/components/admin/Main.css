@@ -71,3 +71,8 @@
 	font-size: 16px;
 	font-weight: bold;
 }
+
+/*  Slide  */
+.slide__edit-form__upload{
+	width: 200px;
+}
