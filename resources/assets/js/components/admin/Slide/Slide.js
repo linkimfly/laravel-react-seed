@@ -120,27 +120,52 @@ export default class Slides extends React.Component {
 			slideEditModalTitle: title,
 			visibleSlideEditModal: true,
 		});
-		// if (id) {
-		// 	this.setState({ slideEditModalLoading: true });
-		// 	axios.get(`${prefixAPI}/slides/${id}`)
-		// 	.then(res => {
-		// 		let slide = res.data.slide;
-		// 		this.formRef.props.form.setFieldsValue({
-		// 			cover: slide.cover,
-		// 			type: slide.type,
-		// 			title: slide.title,
-		// 			target: slide.target,
-		// 			priority: slide.priority,
-		// 		});
-		// 		this.setState({
-		// 			slide: slide,
-		// 			slideEditModalLoading: false,
-		// 		});
-		// 	})
-		// 	.catch(err => {
-		// 		console.log(err);
-		// 	})
-		// }
+		if (id) {
+			this.setState({ slideEditModalLoading: true });
+			axios.get(`${prefixAPI}/slides/${id}`)
+			.then(res => {
+				let slide = res.data.slide;
+				this.formRef.setState({
+					coverUrlTemp: slide.cover,
+					currentSelect: slide.type,
+				});
+				switch (slide.type) {
+					case 'internal':
+						this.formRef.props.form.setFieldsValue({
+							cover: [{ url: slide.cover }],
+							type: slide.type,
+							news_id: slide.news_id,
+							priority: slide.priority,
+						});
+						break;
+					case 'external':
+						this.formRef.props.form.setFieldsValue({
+							cover: [{ url: slide.cover }],
+							type: slide.type,
+							title: slide.title,
+							target: slide.target,
+							priority: slide.priority,
+						});
+						break;
+					case 'none':
+					this.formRef.props.form.setFieldsValue({
+						cover: [{ url: slide.cover }],
+						type: slide.type,
+						title: slide.title,
+						priority: slide.priority,
+					});
+					break;
+					default: break;
+				}
+				this.setState({
+					slide: slide,
+					slideEditModalLoading: false,
+				});
+			})
+			.catch(err => {
+				console.log(err);
+			})
+		}
   }
 
 	handleCancel = (e) => {
@@ -148,6 +173,7 @@ export default class Slides extends React.Component {
 			if (this.state.slide) {
 				this.setState({slide: null});
 				this.formRef.props.form.resetFields();
+				this.formRef.resetSpecialValue();
 			}
 		});
 		this.setState({ slideEditModalLoading: false });
@@ -160,30 +186,25 @@ export default class Slides extends React.Component {
 				if (this.state.slide) {
 					values.id = this.state.slide.id;
 				}
-
-				const formData = new FormData();
-        Object.keys(values).forEach((key) => {
-            if (values[key]) {
-                if (key == 'cover') {
-									let fileList = values[key];
-                  formData.append(key, fileList[fileList.length-1].originFileObj);
-                }else {
-                  formData.append(key, values[key]);
-                }
-            }
-        })
-
-				axios.post(`${prefixAPI}/slides`, formData)
+				if (values.cover) {
+					let cover = values.cover[values.cover.length - 1];
+					if (cover.response) {
+						values.cover = cover.response.url;
+					}else {
+						values.cover = cover.url;
+					}
+				}
+				axios.post(`${prefixAPI}/slides`, values)
 				.then(response => {
 					if (response.data.status == 0) {
 						message.success(response.data.message);
 						form.resetFields();
+						this.formRef.resetSpecialValue();
 						this.setState({
 							slide: null,
 							currentSelect: null,
 				      visibleSlideEditModal: false,
 				    });
-						this.formRef.resetSpecialValue();
 						this.fetchData();
 					}else {
 						message.error(response.data.message);
@@ -203,6 +224,7 @@ const SlideEditForm = Form.create()(
 		constructor(props) {
 	    super();
 	    this.state = {
+				coverUploading: false,
 	    };
 	  }
 		render() {
@@ -301,16 +323,18 @@ const SlideEditForm = Form.create()(
 		              getValueFromEvent: this.normFile,
 		            })(
 		              <Upload
-								      listType="picture-card"
-								      showUploadList={false}
-								      beforeUpload={this.beforeUpload}
-								      headers={{
-								        'X-CSRF-TOKEN':document.head.querySelector('meta[name="csrf-token"]').content
-								      }}
+							      listType="picture-card"
+							      showUploadList={false}
+										action={`${prefixAPI}/upload/file`}
+							      beforeUpload={this.beforeUpload}
+										onChange={this.handleUploadChange}
+							      headers={{
+							        'X-CSRF-TOKEN':document.head.querySelector('meta[name="csrf-token"]').content
+							      }}
 									>
 		                {this.state.coverUrlTemp ? <img src={this.state.coverUrlTemp} style={{width:'100%'}} alt="cover" /> : (
 								      <div>
-								        <Icon type='plus' />
+								        <Icon type={ this.state.coverUploading ? 'loading' : 'plus' } />
 								        <span>Upload</span>
 								      </div>
 										)}
@@ -351,7 +375,7 @@ const SlideEditForm = Form.create()(
 	    return e && e.fileList;
 	  }
 
-	  beforeUpload = (file) => {
+	  beforeUpload = file => {
 			const isJPGPNG = ~['image/jpeg', 'image/png'].indexOf(file.type);
 	    if (!isJPGPNG) {
 	      message.error('仅支持上传 JPG、PNG 格式的图片!');
@@ -360,19 +384,19 @@ const SlideEditForm = Form.create()(
 	    if (!isLt1M) {
 	      message.error('图片大小不能大于1MB!');
 	    }
-	    if (isJPGPNG && isLt1M) {
-	        this.getBase64(file, imageUrl => this.setState({
-	          coverUrlTemp: imageUrl
-	        }));
-	    }
-	    return false;
+	    return isJPGPNG && isLt1M;
 	  }
 
-		getBase64 = (img, callback) => {
-	    const reader = new FileReader();
-	    reader.addEventListener('load', () => callback(reader.result));
-	    reader.readAsDataURL(img);
-	  }
+		handleUploadChange = info => {
+			if (info.file.status == 'uploading') {
+				this.setState({ coverUploading: true });
+				return;
+			}
+			if (info.file.status == 'done') {
+				console.log(info);
+				this.setState({ coverUrlTemp: info.file.response.url });
+			}
+		}
 
 		handleSelectChange = (value) => {
 			this.setState({ currentSelect: value });
@@ -381,6 +405,7 @@ const SlideEditForm = Form.create()(
 		resetSpecialValue = () => {
 			this.setState({
 				coverUrlTemp: null,
+				coverUploading: false,
 				currentSelect: null,
 			});
 		}

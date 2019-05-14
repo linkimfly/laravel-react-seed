@@ -19,6 +19,23 @@ class SlideController extends Controller
 		]);
 	}
 
+	public function show($id)
+	{
+		$slide = Slide::findOrFail($id);
+
+		if (!$slide || $slide->is_delete) {
+			return response()->json([
+				'status' => 1,
+				'message' => '未找到相关轮播，请联系网站管理员！',
+			]);
+		}
+
+		return response()->json([
+			'status' => 0,
+			'slide' => $slide
+		]);
+	}
+
 	public function update(Request $request)
 	{
 		$inputs = $request->all();
@@ -36,12 +53,7 @@ class SlideController extends Controller
 		}
 
 		if ($request->cover) {
-			$file = $request->cover;
-			$fileName = $file->getClientOriginalName();
-			$fileNameMD5 = md5_file($file) . '.' . $file->extension();
-			$fileUrl = '/storage/files/' . $fileNameMD5;
-			$file->storeAs('public/files', $fileNameMD5);
-			$slide->cover = $fileUrl;
+			$slide->cover = $request->cover;
 		}
 
 		if ($request->priority) {
@@ -66,9 +78,12 @@ class SlideController extends Controller
 			case 'external':
 				$slide->title = $request->title;
 				$slide->target = $request->target;
+				$slide->news_id = NULL;
 				break;
 			case 'none':
 				$slide->title = $request->title;
+				$slide->target = NULL;
+				$slide->news_id = NULL;
 				break;
 			default:
 				return response()->json([
@@ -77,10 +92,6 @@ class SlideController extends Controller
 				]);
 				break;
 		}
-		// $inputs = array_except($inputs, ['id', 'created_at', 'updated_at', 'cover']);
-		// foreach ($inputs as $key => $value) {
-		// 	$slide->$key = $value;
-		// }
 		$slide->save();
 
 		return response()->json([
