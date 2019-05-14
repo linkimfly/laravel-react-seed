@@ -32,6 +32,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 		Route::get('slides/{id}/delete', 'SlideController@delete');
 		Route::post('slides', 'SlideController@update');
 		Route::get('types', 'TypeController@index');
+		Route::get('/settings', 'SettingController@index');
+	    Route::post('/settings', 'SettingController@update');
 		Route::post('upload/file', 'UploadController@uploadFile');
 	});
 });

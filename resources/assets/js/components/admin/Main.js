@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Layout, Menu, Icon, Dropdown, Avatar, LocaleProvider, message } from 'antd';
-const { Header, Sider, Content } = Layout;
+const { Header, Sider, Content, Footer } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom';
 import News from './News/News';
 import Slide from './Slide/Slide';
@@ -40,7 +40,7 @@ class SiderLayout extends React.Component {
 	              </Menu.Item>
 								{user.level == 'dev'?
 									<Menu.Item key="settings">
-		                <Link to="/settings/types">
+		                <Link to="/settings/web">
 		                  <Icon type="setting" />
 		                  <span>设置中心</span>
 		                </Link>
@@ -74,6 +74,7 @@ class SiderLayout extends React.Component {
 	                <Redirect to="/news" />
 	              </Switch>
 	            </Content>
+							<Footer style={{ textAlign: 'center' }}> Copyright © 2019 成都空格猫网络科技有限公司 </Footer>
 	          </Layout>
 	        </Layout>
 	      </HashRouter>

@@ -60,7 +60,7 @@
 }
 
 .layout__content{
-  margin: 24px 16px;
+  margin: 24px 16px 0 16px;
   padding: 24;
   background: #fff;
   min-height: auto;
