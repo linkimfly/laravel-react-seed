@@ -72,10 +72,10 @@ export default class News extends React.Component {
 		}, {
       title: '操作',
       key: 'action',
-      width: 250,
+      width: 180,
       render: (text, record) => (
         <span>
-          <ButtonGroup>
+          <ButtonGroup size="small">
 						<Button onClick={e => {this.showNewsEditModal(e, '编辑新闻', record.id)}}>编辑</Button>
 						<Button onClick={e => {this.handleTop(e, record.id)}}>置顶</Button>
             <Button onClick={e => {this.handleDelete(e, record.id)}}>删除</Button>

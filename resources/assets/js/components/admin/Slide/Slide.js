@@ -62,10 +62,10 @@ export default class Slides extends React.Component {
 		}, {
       title: '操作',
       key: 'action',
-      width: 160,
+      width: 130,
       render: (text, record) => (
         <span>
-          <ButtonGroup>
+          <ButtonGroup size="small">
 						<Button onClick={e => {this.showSlideEditModal(e, '编辑轮播', record.id)}}>编辑</Button>
             <Button onClick={e => {this.handleDelete(e, record.id)}}>删除</Button>
           </ButtonGroup>
