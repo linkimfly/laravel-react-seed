@@ -39,6 +39,7 @@ export default class News extends React.Component {
 		  title: 'ID',
 		  dataIndex: 'id',
 		  key: 'id',
+			width: 50,
 		}, {
 		  title: '标题',
 		  key: 'title',
@@ -52,18 +53,22 @@ export default class News extends React.Component {
 		  title: '栏目',
 		  dataIndex: 'type.name',
 		  key: 'type',
+			width: 120,
 		}, {
 		  title: '作者',
 		  dataIndex: 'author',
 		  key: 'author',
+			width: 120,
 		}, {
 		  title: '浏览量',
 		  dataIndex: 'view',
 		  key: 'view',
+			width: 80,
 		}, {
 		  title: '创建时间',
 		  dataIndex: 'created_at',
 		  key: 'created_at',
+			width: 160,
 		}, {
       title: '操作',
       key: 'action',
@@ -81,19 +86,22 @@ export default class News extends React.Component {
     return (
       <div style={{ padding:20 }}>
 				<div style={{overflow:'hidden'}}>
-          <Select defaultValue="created_at_desc" style={{ width: 120, marginRight: 10 }} onChange={this.handleChangeOrder}>
+					<span className="news__header__text" style={{ marginLeft: 10 }}>排序方式</span>
+          <Select defaultValue="created_at_desc" style={{ width: 120, margin: '0 10px' }} onChange={this.handleChangeOrder}>
 						<Option value="created_at_desc">最新发布</Option>
             <Option value="created_at">最早发布</Option>
             <Option value="view_desc">最多浏览</Option>
           </Select>
-          <Select placeholder="按置顶状态筛选" style={{ width: 140, marginRight: 10 }} onChange={this.handleChangeTop} allowClear>
+					<span className="news__header__text">筛选条件</span>
+          <Select placeholder="按置顶状态" style={{ width: 140, margin: '0 10px' }} onChange={this.handleChangeTop} allowClear>
 						<Option value={1}>置顶</Option>
             <Option value={0}>未置顶</Option>
           </Select>
+					<span className="news__header__text">搜索</span>
           <Search
-            placeholder="搜索标题"
+            placeholder="输入标题关键字"
             onSearch={this.handleSearch}
-            style={{ width: 200, marginRight: 10 }}
+            style={{ width: 200, margin: '0 10px' }}
           />
 					<Button type="primary" onClick={e => {this.showNewsEditModal(e, '发布新闻')}} style={{ float: 'right' }}>发布新闻</Button>
         </div>

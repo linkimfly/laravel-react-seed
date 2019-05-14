@@ -11,7 +11,24 @@ let mix = require('laravel-mix');
  |
  */
 
- mix.react('resources/assets/js/admin.js', 'public/js')
-    .sass('resources/assets/sass/app.scss', 'public/css');
+mix.js('resources/assets/js/app.js', 'public/js')
+		.react('resources/assets/js/admin.js', 'public/js')
+		.sass('resources/assets/sass/app.scss', 'public/css');
 
- mix.js('resources/assets/js/app.js', 'public/js');
+mix.webpackConfig({
+	module: {
+		rules: [{
+	    test: /\.less$/,
+	    use: [{
+	      loader: 'less-loader', // compiles Less to CSS
+	      options: {
+	        modifyVars: {
+	          'primary-color': '#13c2c2',
+						'@link-color': '#1890ff',
+	        },
+	        javascriptEnabled: true,
+	      },
+	    }],
+	  }],
+	}
+})
