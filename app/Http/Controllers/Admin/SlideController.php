@@ -99,4 +99,22 @@ class SlideController extends Controller
 			'message' => '保存成功！'
 		]);
 	}
+
+	public function delete($id)
+	{
+		$slide = Slide::findOrFail($id);
+		if (!$slide) {
+			return response()->json([
+				'status' => 1,
+				'message' => '未找到相关轮播，请联系网站管理员！'
+			]);
+		}
+
+		$slide->is_delete = 1;
+		$slide->save();
+		return response()->json([
+			'status' => 0,
+			'message' => '删除成功！'
+		]);
+	}
 }

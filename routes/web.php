@@ -29,6 +29,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 		Route::post('news', 'NewsController@update');
 		Route::get('slides', 'SlideController@index');
 		Route::get('slides/{id}', 'SlideController@show');
+		Route::get('slides/{id}/delete', 'SlideController@delete');
 		Route::post('slides', 'SlideController@update');
 		Route::get('types', 'TypeController@index');
 		Route::post('upload/file', 'UploadController@uploadFile');

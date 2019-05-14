@@ -3,6 +3,7 @@ import { Table, Button, Form, Modal, Spin, Input, Upload, Icon, message, Select,
 const ButtonGroup = Button.Group;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 
 export default class Slides extends React.Component {
   constructor(props) {
@@ -216,6 +217,31 @@ export default class Slides extends React.Component {
       }
     });
   }
+
+	handleDelete = (e, id) => {
+		let that = this;
+		confirm({
+	    title: '确认删除吗?',
+	    onOk() {
+	      return new Promise((resolve, reject) => {
+					axios.get(`${prefixAPI}/slides/${id}/delete`)
+					.then(res => {
+						if (res.data.status == 0) {
+							message.success(res.data.message);
+							that.fetchData();
+						}else {
+							message.error(res.data.message);
+						}
+						resolve();
+					})
+					.catch(err => {
+						console.log(err);
+					})
+	      }).catch(() => console.log('Oops errors!'));
+	    },
+	    onCancel() {},
+	  });
+	}
 	// new function
 }
 
