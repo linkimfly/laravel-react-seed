@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Layout, Menu, Icon, Dropdown, Avatar, LocaleProvider } from 'antd';
+import { Layout, Menu, Icon, Dropdown, Avatar, LocaleProvider, message } from 'antd';
 const { Header, Sider, Content } = Layout;
 import { BrowserRouter as Router, Route, Link, HashRouter, Redirect, Switch } from 'react-router-dom';
 import News from './News/News';
@@ -10,13 +10,19 @@ import styles from "./Main.css";
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 
 class SiderLayout extends React.Component {
+	state = {
+		collapsed: false,
+	}
   render() {
     return (
 			<LocaleProvider locale={zhCN}>
 	      <HashRouter>
 	        <Layout className="layout">
-	          <Sider collapsible >
-	            <div className="layout__logo" />
+	          <Sider collapsible trigger={null} collapsed={this.state.collapsed} width={210}>
+	            <div className="layout__sider__logo">
+								<img src="/images/logo.svg" alt="logo"/>
+								{this.state.collapsed ? '' : <span>SPACE CAT</span>}
+							</div>
 	            <Menu
 	              theme="dark"
 	              defaultSelectedKeys={this.menuAutoSelect()}>
@@ -44,11 +50,16 @@ class SiderLayout extends React.Component {
 	          </Sider>
 	          <Layout>
 	            <Header className="layout__header">
+								<Icon
+									className="layout__header__collapsed"
+		              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+		              onClick={this.toggle}
+		            />
 	              <div className="layout__header__right">
 	                <Dropdown overlay={menu}>
 	                  <a href="#">
 	                    <Avatar src={'images/default-avatar.png'} />
-	                    <span className="layout__header__right__name">username</span>
+	                    <span className="layout__header__right__name">{window.user.name}</span>
 	                  </a>
 	                </Dropdown>
 	              </div>
@@ -69,6 +80,13 @@ class SiderLayout extends React.Component {
 			</LocaleProvider>
     );
   }
+
+	toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  };
+
   //左侧菜单选中状态根据 url 自动转换
   menuAutoSelect() {
     let key = window.location.hash.split('/')[1];
@@ -84,6 +102,7 @@ class SiderLayout extends React.Component {
 const avatarOnClick = function({key}){
   switch (key) {
     case 'logout':
+			message.loading('正在退出登录，请稍后 ...');
       axios.post('logout')
       .then(function (response) {
         location.reload()

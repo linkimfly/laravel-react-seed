@@ -2,16 +2,40 @@
   height: 100vh;
 }
 
-.layout__logo {
-  height: 32px;
-  background: #444;
-  border-radius: 6px;
-  margin: 16px;
+.layout__sider__logo{
+	position: relative;
+    height: 64px;
+    padding-left: 24px;
+    overflow: hidden;
+    line-height: 64px;
+    background: #002140;
+    transition: all .3s;
+}
+.layout__sider__logo img{
+	display: inline-block;
+    height: 32px;
+    vertical-align: middle;
+}
+.layout__sider__logo span{
+    margin-left: 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 20px;
+    font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
+    vertical-align: middle;
 }
 
 .layout__header{
   background-color: #fff;
   padding: 0;
+}
+
+.layout__header__collapsed{
+	font-size: 18px;
+	line-height: 64px;
+	padding: 0 24px;
+	cursor: pointer;
+	transition: color 0.3s;
 }
 
 .layout__header__right{
