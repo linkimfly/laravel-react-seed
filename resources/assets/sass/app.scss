@@ -1,9 +1,82 @@
-
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-
 // Variables
 @import "variables";
 
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+/* common */
+.common__container{
+	width: 998px;
+	margin-left: auto;
+	margin-right: auto;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.common_row{
+	overflow: hidden;
+}
+.common_col_6{
+	float: left;
+	width: 50%;
+}
+.common_col_3{
+	float: left;
+	width: 25%;
+}
+
+/* header */
+.header__up{
+	height: 120px;
+	background-color: white;
+}
+.header{
+	height: 44px;
+	background-color: rgba(5, 11, 42, 0.77);
+	a{
+		height: 44px;
+		line-height: 44px;
+		display: inline-block;
+		width: 190px;
+	}
+}
+
+/* footer */
+.footer{
+	background-color: rgba(5, 11, 42, 0.77);
+	height: 230px;
+}
+.footer__content{
+	padding-top: 80px;
+	text-align: center;
+	color: white;
+}
+
+/* home */
+.home__news{
+	background-color: white;
+}
+.home__news__card{
+	margin: 5px;
+	padding: 15px 20px 5px 20px;
+	border: 1px solid black;
+}
+.home_links{
+	background-color: white;
+}
+
+/* news.index */
+.news__index__content{
+	background-color: white;
+	margin: 20px 0;
+	padding: 20px 0;
+	h1{
+		border-bottom: 1px solid black;
+	}
+}
+
+/* news.show */
+.news__show__content{
+	background-color: white;
+	margin: 20px 0;
+	padding: 20px 100px;
+}

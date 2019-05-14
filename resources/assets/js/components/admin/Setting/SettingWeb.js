@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Form, Spin, Icon, Input, Button, message } from 'antd';
+import { Form, Spin, Icon, Input, Button, message, Select } from 'antd';
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 export class SettingWeb extends React.Component {
   render(){
@@ -17,6 +18,7 @@ const WrappedSettingWebForm = Form.create()(
 	    formData:{
 				web_name:'',
 	      admin_name:'',
+				web_theme:'',
 	    }
 	  }
 	  componentWillMount() {
@@ -66,6 +68,19 @@ const WrappedSettingWebForm = Form.create()(
 	              initialValue: formData.admin_name
 	            })(
 	              <Input placeholder="请输入网站后台名称" />
+	            )}
+	          </FormItem>
+						<FormItem {...formItemLayout} label="网站前台主题">
+	            {getFieldDecorator('web_theme', {
+	              rules: [{
+	                required: true,
+	                message: '请选择网站前台主题！',
+	              }],
+	              initialValue: formData.web_theme
+	            })(
+								<Select style={{ width: 200 }} placeholder="请选择网站前台主题">
+						      <Option value="dm">Made By DM</Option>
+						    </Select>
 	            )}
 	          </FormItem>
 	          <FormItem {...formTailLayout}>

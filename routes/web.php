@@ -13,12 +13,14 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('', 'HomeController@index')->name('home');
+Route::get('news', 'NewsController@index')->name('news.index');
+Route::get('news/{id}', 'NewsController@show')->name('news.show');
 
 
 //需要管理员权限
 Route::middleware(['auth', 'admin'])->group(function () {
-	Route::get('/admin', 'Admin\AdminController@index')->name('admin');
+	Route::get('admin', 'Admin\AdminController@index')->name('admin');
 
 	//api
 	Route::namespace('Admin')->prefix('admin-api')->group(function (){
@@ -32,8 +34,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 		Route::get('slides/{id}/delete', 'SlideController@delete');
 		Route::post('slides', 'SlideController@update');
 		Route::get('types', 'TypeController@index');
-		Route::get('/settings', 'SettingController@index');
-	    Route::post('/settings', 'SettingController@update');
+		Route::get('settings', 'SettingController@index');
+	    Route::post('settings', 'SettingController@update');
 		Route::post('upload/file', 'UploadController@uploadFile');
 	});
 });
